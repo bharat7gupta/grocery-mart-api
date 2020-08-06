@@ -48,8 +48,9 @@ module.exports.datastores = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'sails-mysql',
-    // url: 'mysql://user:password@host:port/database',
+    adapter: 'sails-mongo',
+    url: 'mongodb://sys:YB22gTOoFvfxeVLz@cluster0-shard-00-00.zj77s.mongodb.net:27017,cluster0-shard-00-01.zj77s.mongodb.net:27017,cluster0-shard-00-02.zj77s.mongodb.net:27017/grocery_mart?ssl=true&replicaSet=atlas-gvdp3z-shard-0&authSource=admin&retryWrites=true&w=majority'
+    // url: 'mongodb://sys:YB22gTOoFvfxeVLz@cluster0.zj77s.mongodb.net/test?authSource=admin&replicaSet=atlas-gvdp3z-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true/grocery_mart',
 
   },
 

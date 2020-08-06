@@ -18,25 +18,26 @@ the account verification message.)`,
 
 
   inputs: {
-
-    emailAddress: {
-      required: true,
+    email: {
       type: 'string',
-      isEmail: true,
       description: 'The email address for the new account, e.g. m@example.com.',
       extendedDescription: 'Must be a valid email address.',
     },
 
+    mobile: {
+      type: 'string',
+      description: 'The phone number for the new account, e.g. 6234567890',
+      extendedDescription: 'Must be a valid phone number.',
+    },
+
     password: {
-      required: true,
       type: 'string',
       maxLength: 200,
       example: 'passwordlol',
       description: 'The unencrypted password to use for the new account.'
     },
 
-    fullName:  {
-      required: true,
+    username:  {
       type: 'string',
       example: 'Frida Kahlo de Rivera',
       description: 'The user\'s full name.',
@@ -48,74 +49,139 @@ the account verification message.)`,
   exits: {
 
     success: {
-      description: 'New user account was created successfully.'
+      statusCode: 200,
+      description: 'Account created successfully.'
     },
 
     invalid: {
+      statusCode: 400,
       responseType: 'badRequest',
-      description: 'The provided fullName, password and/or email address are invalid.',
-      extendedDescription: 'If this request was sent from a graphical user interface, the request '+
-      'parameters should have been validated/coerced _before_ they were sent.'
+      description: 'Invalid Request',
     },
 
-    emailAlreadyInUse: {
+    invalidUsername: {
+      statusCode: 400,
+      responseType: 'validationError',
+      description: 'Username must be alphanumeric with 3 to 50 characters',
+    },
+
+    invalidEmail: {
+      statusCode: 400,
+      responseType: 'validationError',
+      description: 'Invalid Email ID',
+    },
+
+    invalidMobile: {
+      statusCode: 400,
+      responseType: 'validationError',
+      description: 'Invalid Mobile Number',
+    },
+
+    invalidPassword: {
+      statusCode: 400,
+      responseType: 'validationError',
+      description: 'Password must be more than six characters',
+    },
+
+    emailOrMobileRequired: {
+      statusCode: 400,
+      responseType: 'validationError',
+      description: 'Email or Mobile number is required',
+    },
+
+    accountAlreadyInUse: {
       statusCode: 409,
-      description: 'The provided email address is already in use.',
+      responseType: 'conflict',
+      description: 'Email or Mobile number is already in use.',
+    },
+
+    serverError: {
+      statusCode: 500,
+      responseType: 'serverError',
     },
 
   },
 
 
-  fn: async function (inputs) {
+  fn: async function (inputs, exits) {
 
-    var newEmailAddress = inputs.emailAddress.toLowerCase();
+    const validate = (field, value, exitType) => {
+      try {
+        if (!value || ! _.trim(_.isEmpty(value))) {
+          throw exitType;
+        }
+
+        User.validate(field, value);
+      }
+      catch(e) {
+        throw exitType;
+      }
+    };
+
+    const { username, userType, email, mobile, password } = inputs;
+    let user = {};
+    let uniqueUserCheckArray = [];
+
+    validate('username', username, 'invalidUsername');
+    user.username = username;
+
+    if (!email && !mobile) {
+      throw 'emailOrMobileRequired';
+    }
+
+    if (email) {
+      validate('email', email, 'invalidEmail');
+      user.email = email.toLowerCase();
+      uniqueUserCheckArray.push({ email: user.email });
+    }
+
+    if (mobile) {
+      validate('mobile', mobile, 'invalidMobile');
+      user.mobile = mobile;
+      uniqueUserCheckArray.push({ mobile });
+    }
+
+    validate('password', password, 'invalidPassword');
+    user.password = password;
+
+    // check if user exists
+    const doesUserExist = await User.find().where({
+      or: uniqueUserCheckArray
+    });
+
+    if (doesUserExist && doesUserExist.length > 0) {
+      throw 'accountAlreadyInUse';
+    }
 
     // Build up data for the new user record and save it to the database.
     // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newUserRecord = await User.create(_.extend({
-      emailAddress: newEmailAddress,
-      password: await sails.helpers.passwords.hashPassword(inputs.password),
-      fullName: inputs.fullName,
-      tosAcceptedByIp: this.req.ip
-    }, sails.config.custom.verifyEmailAddresses? {
-      emailProofToken: await sails.helpers.strings.random('url-friendly'),
-      emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
-      emailStatus: 'unconfirmed'
-    }:{}))
-    .intercept('E_UNIQUE', 'emailAlreadyInUse')
-    .intercept({name: 'UsageError'}, 'invalid')
-    .fetch();
-
-    // If billing feaures are enabled, save a new customer entry in the Stripe API.
-    // Then persist the Stripe customer id in the database.
-    if (sails.config.custom.enableBillingFeatures) {
-      let stripeCustomerId = await sails.helpers.stripe.saveBillingInfo.with({
-        emailAddress: newEmailAddress
-      }).timeout(5000).retry();
-      await User.updateOne({id: newUserRecord.id})
-      .set({
-        stripeCustomerId
-      });
-    }
+    // var newUserRecord = await User.create({
+    //   ...user,
+    //   tosAcceptedByIp: this.req.ip
+    // })
+    // .intercept({name: 'UsageError'}, 'invalid')
+    // .fetch();
 
     // Store the user's new id in their session.
-    this.req.session.userId = newUserRecord.id;
+    // this.req.session.userId = newUserRecord.id;
 
-    if (sails.config.custom.verifyEmailAddresses) {
-      // Send "confirm account" email
-      await sails.helpers.sendTemplateEmail.with({
-        to: newEmailAddress,
-        subject: 'Please confirm your account',
-        template: 'email-verify-account',
+    // send account activation mail (with OTP) to the current user
+    if (!userType || userType !== constants.USER_TYPE.DEFAULT) {
+      // if email is provided then send OTP in mail
+      await sails.helpers.sendMail.with({
+        to: email,
+        subject: 'Welcome to E-Vendor',
         templateData: {
-          fullName: inputs.fullName,
-          token: newUserRecord.emailProofToken
-        }
+          name: username
+        },
+        templateFile: 'welcomeEmail',
       });
-    } else {
-      sails.log.info('Skipping new account email verification... (since `verifyEmailAddresses` is disabled)');
+
+      // if mobile then send OTP to mobile as SMS
+
     }
 
+    exits.success();
   }
 
 };
