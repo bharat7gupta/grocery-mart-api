@@ -112,4 +112,6 @@ module.exports.custom = {
   mailgunDomain: 'sandboxae36c91905ed433782994bed28466dbc.mailgun.org',
   mailFrom: 'E-Vendor <info@evendor.org>',
 
+  otpNumDigits: 6,
+  
 };

@@ -6,7 +6,7 @@ const USER_TYPES = keyMirror({
 	DRIVER: null,
 });
 
-const ACCOUNT_TYPES = keyMirror({
+const ACCOUNT_STATUS = keyMirror({
 	CONFIRMED: null,
 	UNCONFIRMED: null,
 	SUSPENDED: null,
@@ -14,5 +14,5 @@ const ACCOUNT_TYPES = keyMirror({
 
 module.exports = {
 	USER_TYPES,
-	ACCOUNT_TYPES,
+	ACCOUNT_STATUS,
 };

@@ -56,8 +56,8 @@ module.exports = {
 
     accountStatus: {
       type: 'string',
-      isIn: Object.keys(constants.ACCOUNT_TYPES),
-      defaultsTo: constants.ACCOUNT_TYPES.UNCONFIRMED,
+      isIn: Object.keys(constants.ACCOUNT_STATUS),
+      defaultsTo: constants.ACCOUNT_STATUS.UNCONFIRMED,
       description: 'The confirmation status of the user\'s email address.',
       extendedDescription:
 `Users might be created as "unconfirmed" (e.g. normal signup) or as "confirmed" (e.g. hard-coded
