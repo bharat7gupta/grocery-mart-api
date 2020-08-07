@@ -1,4 +1,4 @@
-module.exports = async function expired() {
+module.exports = async function invalid() {
 	const errorCode = this.res.get('X-Exit');
 	const errorMessage = this.res.get('X-Exit-Description');
 

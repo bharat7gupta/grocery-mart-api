@@ -113,5 +113,7 @@ module.exports.custom = {
   mailFrom: 'E-Vendor <info@evendor.org>',
 
   otpNumDigits: 6,
-  
+  otpExpiryTime: 5 * 60 * 1000, // 5 mins in ms
+  maxOTPCountPerDay: 10,
+
 };

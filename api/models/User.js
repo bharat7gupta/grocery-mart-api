@@ -67,22 +67,40 @@ Similarly, when an existing user changes their email address, they switch to the
 email status until they click the link in the confirmation email.`
     },
 
-    passwordResetToken: {
-      type: 'string',
-      description: 'A unique token used to verify the user\'s identity when recovering a password.  Expires after 1 use, or after a set amount of time has elapsed.'
-    },
-
-    passwordResetTokenExpiresAt: {
-      type: 'number',
-      description: 'A JS timestamp (epoch ms) representing the moment when this user\'s `passwordResetToken` will expire (or 0 if the user currently has no such token).',
-      example: 1502844074211
-    },
-
     tosAcceptedByIp: {
       type: 'string',
       description: 'The IP (ipv4) address of the request that accepted the terms of service.',
       extendedDescription: 'Useful for certain types of businesses and regulatory requirements (KYC, etc.)',
       moreInfoUrl: 'https://en.wikipedia.org/wiki/Know_your_customer'
+    },
+
+    otp: {
+      type: 'string',
+      description: 'OTP sent to the user',
+      example: '242455'
+    },
+
+    otpPurpose: {
+      type: 'string',
+      isIn: Object.keys(constants.OTP_PURPOSE),
+      description: 'Purpose for OTP. ACCOUNT_VERIFICATION, PASSWORD_RESET etc',
+    },
+
+    otpExpiresAt: {
+      type: 'number',
+      description: 'Timestamp at which OTP expires',
+      example: 1502844074211
+    },
+
+    otpCountToday: {
+      type: 'number',
+      description: 'Total OTP sent in the current day',
+    },
+
+    lastOtpSentAt: {
+      type: 'number',
+      description: 'Timestamp of when an OTP was last sent to user. Max of MAX_OTP_COUNT_PER_DAY. OTP wont be sent after that',
+      example: 1502844074211,
     },
 
     lastSeenAt: {
@@ -102,6 +120,5 @@ email status until they click the link in the confirmation email.`
     // n/a
 
   },
-
 
 };

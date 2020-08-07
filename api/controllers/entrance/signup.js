@@ -125,7 +125,7 @@ the account verification message.)`,
 
     const { username, userType, email, mobile, password } = inputs;
     let user = {};
-    let uniqueUserCheckArray = [];
+    let uniqueUserCheckClause = [];
 
     validate('username', username, 'invalidUsername');
     user.username = username;
@@ -137,30 +137,32 @@ the account verification message.)`,
     if (email) {
       validate('email', email, 'invalidEmail');
       user.email = email.toLowerCase();
-      uniqueUserCheckArray.push({ email: user.email });
+      uniqueUserCheckClause = { email: user.email };
     }
 
     if (mobile) {
       validate('mobile', mobile, 'invalidMobile');
       user.mobile = mobile;
-      uniqueUserCheckArray.push({ mobile });
+      uniqueUserCheckClause = { mobile };
     }
 
     validate('password', password, 'invalidPassword');
     user.password = password;
 
     // check if user exists
-    const doesUserExist = await User.find().where({
-      or: uniqueUserCheckArray
-    });
+    const doesUserExist = await User.find().where(uniqueUserCheckClause);
 
     if (doesUserExist && doesUserExist.length > 0) {
       throw 'accountAlreadyInUse';
     }
 
     // set account status to be confirmed for DEFAULT users
+    // set userType if non-DEFAULT
     if (!userType || userType === constants.USER_TYPES.DEFAULT) {
       user.accountStatus = constants.ACCOUNT_STATUS.CONFIRMED;
+    }
+    else {
+      user.userType = userType;
     }
 
     // Build up data for the new user record and save it to the database.
@@ -176,44 +178,20 @@ the account verification message.)`,
     this.req.session.userId = newUserRecord.id;
 
     // send account activation mail (with OTP) to the current user
-    if (userType && (
-          userType === constants.USER_TYPES.WHOLESALER ||
-          userType === constants.USER_TYPES.DRIVER)
-    ) {
-      const otp = sails.helpers.getOtpCode();
-
-      // if email is provided then send OTP in mail
-      if (email) {
-        await sails.helpers.sendMail.with({
-          to: email,
-          subject: 'Verify your account',
-          templateData: {
-            name: username,
-            otp,
-          },
-          templateFile: 'verifyAccount',
-        });
-      }
-
-      // TODO: if mobile then send OTP to mobile as SMS
-      if (mobile) {
-
-      }
-    }
-    else {
-      // if email is provided then send OTP in mail
+    if (!userType || userType === constants.USER_TYPES.DEFAULT) {
+      // if email is provided then send welcome email
       if (email) {
         await sails.helpers.sendMail.with({
           to: email,
           subject: 'Welcome to E-Vendor',
           templateData: {
-            name: username,
+            username,
           },
           templateFile: 'welcomeEmail',
         });
       }
 
-      // TODO: if mobile then send OTP to mobile as SMS
+      // TODO: if mobile then send welcome message
       if (mobile) {
 
       }
