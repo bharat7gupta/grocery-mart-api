@@ -28,7 +28,13 @@ module.exports = function unauthorized() {
   sails.log.verbose('Ran custom response: res.unauthorized()');
 
   if (req.wantsJSON) {
-    return res.sendStatus(401);
+    const errorCode = this.res.get('X-Exit');
+    const errorMessage = this.res.get('X-Exit-Description');
+
+    return res.status(401).send({
+      code: errorCode,
+      message: errorMessage
+    });
   }
   // Or log them out (if necessary) and then redirect to the login page.
   else {

@@ -2,12 +2,9 @@ var constants = require('../../../config/constants');
 
 module.exports = {
 
-
   friendlyName: 'Signup',
 
-
   description: 'Sign up for a new user account.',
-
 
   extendedDescription:
 `This creates a new user record in the database, signs in the requesting user agent
@@ -17,7 +14,6 @@ by modifying its [session](https://sailsjs.com/documentation/concepts/sessions),
 If a verification email is sent, the new user's account is put in an "unconfirmed" state
 until they confirm they are using a legitimate email address (by clicking the link in
 the account verification message.)`,
-
 
   inputs: {
     email: {
@@ -108,7 +104,6 @@ the account verification message.)`,
 
   },
 
-
   fn: async function (inputs, exits) {
     const validate = (field, value, exitType) => {
       try {
@@ -127,7 +122,7 @@ the account verification message.)`,
     let user = {};
     let uniqueUserCheckClause;
 
-    User.validate('username', username, 'invalidUsername');
+    validate('username', username, 'invalidUsername');
     user.username = username;
 
     if (!email && !mobile) {
@@ -135,24 +130,24 @@ the account verification message.)`,
     }
 
     if (email) {
-      User.validate('email', email, 'invalidEmail');
+      validate('email', email, 'invalidEmail');
       user.email = email.toLowerCase();
       uniqueUserCheckClause = { email: user.email };
     }
 
     if (mobile) {
-      User.validate('mobile', mobile, 'invalidMobile');
+      validate('mobile', mobile, 'invalidMobile');
       user.mobile = mobile;
       uniqueUserCheckClause = { mobile };
     }
 
-    User.validate('password', password, 'invalidPassword');
+    validate('password', password, 'invalidPassword');
     user.password = password;
 
     // check if user exists
-    const doesUserExist = await User.find().where(uniqueUserCheckClause);
+    const doesUserExist = await User.findOne().where(uniqueUserCheckClause);
 
-    if (doesUserExist && doesUserExist.length > 0) {
+    if (doesUserExist) {
       throw 'accountAlreadyInUse';
     }
 
