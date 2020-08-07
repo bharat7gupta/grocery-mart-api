@@ -36,8 +36,9 @@ module.exports = {
 
 	exits: {
 		success: {
-			statusCode: 200,
-			description: 'Account created successfully.'
+      statusCode: 200,
+      responseType: 'success',
+			description: 'OTP Verified!'
 		},
 
 		emailOrMobileRequired: {
@@ -185,10 +186,7 @@ module.exports = {
       throw 'invalidRequest';
     }
 
-    exits.success({
-      code: 'SUCCESS',
-      message: 'OTP Verified!'
-    });
+    exits.success();
 	}
 
 };

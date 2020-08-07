@@ -24,8 +24,9 @@ module.exports = {
 
 	exits: {
 		success: {
-			statusCode: 200,
-			description: 'Account created successfully.'
+      statusCode: 200,
+      responseType: 'success',
+			description: 'OTP sent successfully.'
 		},
 
 		emailOrMobileRequired: {
@@ -165,7 +166,7 @@ module.exports = {
       throw 'somethingWentWrong';
     }
 
-    exits.success({ code: 'SUCCESS', message: 'OTP sent successfully' });
+    exits.success();
 	}
 
 };

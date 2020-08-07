@@ -55,6 +55,7 @@ the account verification message.)`,
 
     success: {
       statusCode: 200,
+      responseType: 'success',
       description: 'Account created successfully.'
     },
 
@@ -109,7 +110,6 @@ the account verification message.)`,
 
 
   fn: async function (inputs, exits) {
-
     const validate = (field, value, exitType) => {
       try {
         if (!value || ! _.trim(_.isEmpty(value))) {
@@ -125,9 +125,9 @@ the account verification message.)`,
 
     const { username, userType, email, mobile, password } = inputs;
     let user = {};
-    let uniqueUserCheckClause = [];
+    let uniqueUserCheckClause;
 
-    validate('username', username, 'invalidUsername');
+    User.validate('username', username, 'invalidUsername');
     user.username = username;
 
     if (!email && !mobile) {
@@ -135,18 +135,18 @@ the account verification message.)`,
     }
 
     if (email) {
-      validate('email', email, 'invalidEmail');
+      User.validate('email', email, 'invalidEmail');
       user.email = email.toLowerCase();
       uniqueUserCheckClause = { email: user.email };
     }
 
     if (mobile) {
-      validate('mobile', mobile, 'invalidMobile');
+      User.validate('mobile', mobile, 'invalidMobile');
       user.mobile = mobile;
       uniqueUserCheckClause = { mobile };
     }
 
-    validate('password', password, 'invalidPassword');
+    User.validate('password', password, 'invalidPassword');
     user.password = password;
 
     // check if user exists
