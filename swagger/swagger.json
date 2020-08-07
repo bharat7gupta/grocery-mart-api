@@ -1,0 +1,618 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Swagger Json",
+    "description": "This is a generated swagger json for your sails project",
+    "termsOfService": "http://example.com/terms",
+    "contact": {
+      "name": "Theophilus Omoregbee",
+      "url": "http://github.com/theo4u",
+      "email": "theo4u@ymail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:1337/"
+    }
+  ],
+  "externalDocs": {
+    "url": "https://theoomoregbee.github.io/"
+  },
+  "tags": [
+    {
+      "name": "Login"
+    },
+    {
+      "name": "Signup"
+    },
+    {
+      "name": "Generate OTP"
+    },
+    {
+      "name": "Validate OTP"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "user": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/user-without-required-constraint"
+          },
+          {
+            "required": [
+              "password",
+              "username"
+            ]
+          }
+        ]
+      },
+      "user-without-required-constraint": {
+        "type": "object",
+        "description": "Sails ORM Model **User**",
+        "properties": {
+          "createdAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "updatedAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "mary.sue@example.com",
+            "maxLength": 200
+          },
+          "mobile": {
+            "type": "string",
+            "pattern": "^\\d{10}$",
+            "example": "6123456789"
+          },
+          "password": {
+            "type": "string",
+            "pattern": "^\\w{6,}$",
+            "description": "Securely hashed representation of the user's login password.",
+            "example": "2$28a8eabna301089103-13948134nad"
+          },
+          "username": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\\s]{3,}$",
+            "description": "Full representation of the user's name.",
+            "example": "Mary Sue van der McHenst",
+            "maxLength": 50
+          },
+          "userType": {
+            "type": "string",
+            "default": "DEFAULT",
+            "description": "Type of the user. Can be either of DEFAULT (General buyer),\n        WHOLESALER or DRIVER (person making goods delivery)",
+            "example": "WHOLESALER",
+            "enum": [
+              "DEFAULT",
+              "WHOLESALER",
+              "DRIVER"
+            ]
+          },
+          "accountStatus": {
+            "type": "string",
+            "default": "UNCONFIRMED",
+            "description": "The confirmation status of the user's email address.",
+            "enum": [
+              "CONFIRMED",
+              "UNCONFIRMED",
+              "PASSWORD_RESET"
+            ],
+            "example": "UNCONFIRMED"
+          },
+          "tosAcceptedByIp": {
+            "type": "string",
+            "description": "The IP (ipv4) address of the request that accepted the terms of service.",
+            "externalDocs": "https://en.wikipedia.org/wiki/Know_your_customer"
+          },
+          "otp": {
+            "type": "string",
+            "description": "OTP sent to the user",
+            "example": "242455"
+          },
+          "otpPurpose": {
+            "type": "string",
+            "description": "Purpose for OTP. ACCOUNT_VERIFICATION, PASSWORD_RESET etc",
+            "enum": [
+              "ACCOUNT_VERIFICATION",
+              "PASSWORD_RESET"
+            ]
+          },
+          "otpExpiresAt": {
+            "type": "number",
+            "format": "double",
+            "description": "Timestamp at which OTP expires",
+            "example": 1502844074211
+          },
+          "otpCountToday": {
+            "type": "number",
+            "format": "double",
+            "description": "Total OTP sent in the current day"
+          },
+          "lastOtpSentAt": {
+            "type": "number",
+            "format": "double",
+            "description": "Timestamp of when an OTP was last sent to user. Max of MAX_OTP_COUNT_PER_DAY. OTP wont be sent after that",
+            "example": 1502844074211
+          },
+          "lastSeenAt": {
+            "type": "number",
+            "format": "double",
+            "description": "A JS timestamp (epoch ms) representing the moment at which this user most recently interacted with the backend while logged in (or 0 if they have not interacted with the backend at all yet).",
+            "example": 1502844074211
+          }
+        }
+      }
+    },
+    "parameters": {
+      "AttributeFilterParam": {
+        "in": "query",
+        "name": "_*_",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "To filter results based on a particular attribute, specify a query parameter with the same name as the attribute defined on your model. For instance, if our `Purchase` model has an `amount` attribute, we could send `GET /purchase?amount=99.99` to return a list of $99.99 purchases."
+      },
+      "WhereQueryParam": {
+        "in": "query",
+        "name": "where",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Instead of filtering based on a specific attribute, you may instead choose to provide a `where` parameter with the WHERE piece of a [Waterline criteria](https://sailsjs.com/documentation/concepts/models-and-orm/query-language), _encoded as a JSON string_. This allows you to take advantage of `contains`, `startsWith`, and other sub-attribute criteria modifiers for more powerful `find()` queries.\n\ne.g. `?where={\"name\":{\"contains\":\"theodore\"}}`"
+      },
+      "LimitQueryParam": {
+        "in": "query",
+        "name": "limit",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "The maximum number of records to send back (useful for pagination). Defaults to 30."
+      },
+      "SkipQueryParam": {
+        "in": "query",
+        "name": "skip",
+        "required": false,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "The number of records to skip (useful for pagination)."
+      },
+      "SortQueryParam": {
+        "in": "query",
+        "name": "sort",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The sort order. By default, returned records are sorted by primary key value in ascending order.\n\ne.g. `?sort=lastName%20ASC`"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/account/login": {
+      "post": {
+        "summary": "Login",
+        "description": "Log in using the provided email and password combination.",
+        "tags": [
+          "Login"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email address associated with account, e.g. m@example.com."
+          },
+          {
+            "in": "query",
+            "name": "mobile",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The phone number associated with account, e.g. 6234567890"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "passwordlol",
+              "maxLength": 200
+            },
+            "description": "The unencrypted password to try in this attempt, e.g. \"passwordlol\"."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Logged in successfully!"
+                    },
+                    {
+                      "type": "string",
+                      "description": "The provided email and password combination does not\n      match any user in the database."
+                    },
+                    {
+                      "type": "string",
+                      "description": "The provided email and password combination does not\n      match any user in the database."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Please confirm your account and then try logging in."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email or Mobile number is required"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/account/signup": {
+      "post": {
+        "summary": "Signup",
+        "description": "Sign up for a new user account.",
+        "tags": [
+          "Signup"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email address for the new account, e.g. m@example.com."
+          },
+          {
+            "in": "query",
+            "name": "mobile",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The phone number for the new account, e.g. 6234567890"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "passwordlol",
+              "maxLength": 200
+            },
+            "description": "The unencrypted password to use for the new account."
+          },
+          {
+            "in": "query",
+            "name": "username",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Frida Kahlo de Rivera"
+            },
+            "description": "The user's full name."
+          },
+          {
+            "in": "query",
+            "name": "userType",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "DEFAULT, WHOLESALER, DRIVER"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account created successfully."
+          },
+          "400": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Invalid Request"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Username must be alphanumeric with 3 to 50 characters"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Email ID"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Mobile Number"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Password must be more than six characters"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Email or Mobile number is required"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "409": {
+            "description": "Email or Mobile number is already in use!"
+          },
+          "500": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/otp/generate": {
+      "post": {
+        "summary": "Generate OTP",
+        "description": "Generate OTP for validation. Purpose: ACCOUNT_VERIFICATION, PASSWORD_RESET etc",
+        "tags": [
+          "Generate OTP"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Email ID required if account created with Email ID"
+          },
+          {
+            "in": "query",
+            "name": "mobile",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mobile number required if account created with mobile number"
+          },
+          {
+            "in": "query",
+            "name": "otpPurpose",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ACCOUNT_VERIFICATION, PASSWORD_RESET etc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "OTP sent successfully."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Maximum OTP retries reached. Please try again tomorrow."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Email or Mobile number is required"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Email ID"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Mobile Number"
+                    },
+                    {
+                      "type": "string",
+                      "description": "User not found."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Request."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Something went wrong. Please try again"
+          }
+        }
+      }
+    },
+    "/api/v1/otp/validate": {
+      "post": {
+        "summary": "Validate OTP",
+        "description": "Validate OTP. Purpose: ACCOUNT_VERIFICATION, PASSWORD_RESET etc",
+        "tags": [
+          "Validate OTP"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Email ID required if account created with Email ID"
+          },
+          {
+            "in": "query",
+            "name": "mobile",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Mobile number required if account created with mobile number"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "passwordlol",
+              "maxLength": 200
+            },
+            "description": "The unencrypted password to use for the new account."
+          },
+          {
+            "in": "query",
+            "name": "otp",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User entered OTP"
+          },
+          {
+            "in": "query",
+            "name": "otpPurpose",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ACCOUNT_VERIFICATION, PASSWORD_RESET etc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "OTP Verified!"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Your OTP has expired. Please get a new OTP"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Email or Mobile number is required"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Email ID"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Mobile Number"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Password must be more than six characters"
+                    },
+                    {
+                      "type": "string",
+                      "description": "User not found."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Invalid Request."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Entered OTP in incorrect."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Something went wrong. Please try again"
+          }
+        }
+      }
+    }
+  }
+}

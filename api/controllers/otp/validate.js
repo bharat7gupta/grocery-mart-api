@@ -1,9 +1,9 @@
 const constants = require('../../../config/constants');
 
 module.exports = {
-  friendlyName: 'Generate OTP',
+  friendlyName: 'Validate OTP',
 
-	description: 'Generate OTP for validation. Purpose: ACCOUNT_VERIFICATION, PASSWORD_RESET etc',
+	description: 'Validate OTP. Purpose: ACCOUNT_VERIFICATION, PASSWORD_RESET etc',
 
 	inputs: {
 		email: {
