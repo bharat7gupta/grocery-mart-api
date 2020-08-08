@@ -1,5 +1,13 @@
 const constants = require('../../../config/constants');
 
+const errorMessages = {
+  success: 'Logged in successfully!',
+  emailOrMobileRequired: 'Email or Mobile number is required',
+  badEmailPasswordCombo: 'The provided email and password combination does not match any user in the database.',
+  badMobilePasswordCombo: 'The provided email and password combination does not match any user in the database.',
+  accountNotConfirmed: 'Please confirm your account and then try logging in.',
+};
+
 module.exports = {
 
   friendlyName: 'Login',
@@ -36,34 +44,30 @@ password attempt.`,
 
   },
 
-
   exits: {
 
     success: {
+      statusCode: 200,
       responseType: 'success',
-      description: 'Logged in successfully!',
     },
 
     emailOrMobileRequired: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Email or Mobile number is required',
     },
 
     badEmailPasswordCombo: {
-      description: `The provided email and password combination does not
-      match any user in the database.`,
+      statusCode: 403,
       responseType: 'unauthorized'
     },
 
     badMobilePasswordCombo: {
-      description: `The provided email and password combination does not
-      match any user in the database.`,
+      statusCode: 403,
       responseType: 'unauthorized'
     },
 
     accountNotConfirmed: {
-      description: 'Please confirm your account and then try logging in.',
+      statusCode: 403,
       responseType: 'unauthorized'
     }
 
@@ -75,7 +79,7 @@ password attempt.`,
     const { email, mobile, password } = inputs;
 
     if (!email && !mobile) {
-      throw 'emailOrMobileRequired';
+      throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
     }
 
     // Look up by the email address.
@@ -83,12 +87,17 @@ password attempt.`,
     const userRecord = await User.findOne(userFindClause);
 
     if (userRecord && userRecord.accountStatus === constants.ACCOUNT_STATUS.UNCONFIRMED) {
-      throw 'accountNotConfirmed';
+      throw exits.accountNotConfirmed(errorMessages.accountNotConfirmed);
     }
 
     // If no user record or the password doesn't match, then exit thru badCombo.
     if (!userRecord || password !== userRecord.password) {
-      throw email ? 'badEmailPasswordCombo' : 'badMobilePasswordCombo';
+      if (email) {
+        throw exits.badEmailPasswordCombo(errorMessages.badEmailPasswordCombo);
+      }
+      else {
+        throw exits.badMobilePasswordCombo(errorMessages.badMobilePasswordCombo);
+      }
     }
 
     // Modify the active session instance.

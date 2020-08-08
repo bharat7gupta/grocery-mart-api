@@ -1,5 +1,16 @@
 const constants = require('../../../config/constants');
 
+const errorMessages = {
+  success: 'OTP sent successfully.',
+  emailOrMobileRequired: 'Email or Mobile number is required',
+  invalidEmail: 'Invalid Email ID',
+  invalidMobile: 'Invalid Mobile Number',
+  notFound: 'User not found.',
+  invalidRequest: 'Invalid Request.',
+  somethingWentWrong: 'Something went wrong. Please try again',
+  OTPMaxRetries: 'Maximum OTP retries reached. Please try again tomorrow.',
+};
+
 module.exports = {
   friendlyName: 'Generate OTP',
 
@@ -26,49 +37,41 @@ module.exports = {
 		success: {
       statusCode: 200,
       responseType: 'success',
-			description: 'OTP sent successfully.'
 		},
 
 		emailOrMobileRequired: {
 			statusCode: 400,
 			responseType: 'validationError',
-			description: 'Email or Mobile number is required',
     },
 
     invalidEmail: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Invalid Email ID',
     },
 
     invalidMobile: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Invalid Mobile Number',
     },
     
     notFound: {
 			statusCode: 400,
 			responseType: 'validationError',
-			description: 'User not found.',
     },
     
     invalidRequest: {
 			statusCode: 400,
 			responseType: 'validationError',
-			description: 'Invalid Request.',
     },
     
     somethingWentWrong: {
       statusCode: 500,
 			responseType: 'validationError',
-			description: 'Something went wrong. Please try again',
     },
 
     OTPMaxRetries: {
       statusCode: 200,
       responseType: 'invalid',
-      description: 'Maximum OTP retries reached. Please try again tomorrow.',
     }
 	},
 
@@ -76,13 +79,13 @@ module.exports = {
     const validate = (field, value, exitType) => {
       try {
         if (!value || ! _.trim(_.isEmpty(value))) {
-          throw exitType;
+          throw exits[exitType](errorMessages[exitType]);
         }
 
         User.validate(field, value);
       }
       catch(e) {
-        throw exitType;
+        throw exits[exitType](errorMessages[exitType]);
       }
     };
 
@@ -91,7 +94,7 @@ module.exports = {
     const { email, mobile, otpPurpose } = inputs;
 
 		if (!email && !mobile) {
-			throw 'emailOrMobileRequired';
+      throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
     }
 
     if (email) {
@@ -110,11 +113,11 @@ module.exports = {
     const user = await User.findOne().where(uniqueUserCheckClause);
 
     if (!user) {
-      throw 'notFound';
+      throw exits.notFound(errorMessages.notFound);
     }
 
     if (user.otpCountToday >= sails.config.custom.maxOTPCountPerDay) {
-      throw 'OTPMaxRetries';
+      throw exits.OTPMaxRetries(errorMessages.OTPMaxRetries);
     }
 
     const lastOtpSentAt = user.lastOtpSentAt;
@@ -163,7 +166,7 @@ module.exports = {
       });
 
     if (!updatedUser) {
-      throw 'somethingWentWrong';
+      throw exits.somethingWentWrong(errorMessages.somethingWentWrong);
     }
 
     exits.success();

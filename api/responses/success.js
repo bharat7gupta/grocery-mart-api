@@ -1,6 +1,5 @@
-module.exports = async function conflict() {
+module.exports = async function conflict(errorMessage) {
 	const errorCode = this.res.get('X-Exit');
-	const errorMessage = this.res.get('X-Exit-Description');
 
 	return this.res.json({
 		code: errorCode,

@@ -1,6 +1,5 @@
-module.exports = async function invalid() {
+module.exports = async function invalid(errorMessage) {
 	const errorCode = this.res.get('X-Exit');
-	const errorMessage = this.res.get('X-Exit-Description');
 
 	return this.res.json({
 		code: errorCode,

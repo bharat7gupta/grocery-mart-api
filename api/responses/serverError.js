@@ -1,6 +1,5 @@
-module.exports = async function serverError() {
+module.exports = async function serverError(errorMessage) {
 	const errorCode = 'SERVER_ERROR';
-	const errorMessage = 'Internal Server Error. Please try again!';
 
 	return this.res.json({
 		code: errorCode,

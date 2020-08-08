@@ -20,7 +20,7 @@
  *     }
  * ```
  */
-module.exports = function unauthorized() {
+module.exports = function unauthorized(errorMessage) {
 
   var req = this.req;
   var res = this.res;
@@ -29,7 +29,6 @@ module.exports = function unauthorized() {
 
   if (req.wantsJSON) {
     const errorCode = this.res.get('X-Exit');
-    const errorMessage = this.res.get('X-Exit-Description');
 
     return res.status(401).send({
       code: errorCode,

@@ -1,4 +1,16 @@
-var constants = require('../../../config/constants');
+const constants = require('../../../config/constants');
+
+const errorMessages = {
+  success: 'Account created successfully.',
+  invalid: 'Invalid Request',
+  invalidUsername: 'Username must be alphanumeric with 3 to 50 characters',
+  invalidEmail: 'Invalid Email ID',
+  invalidMobile: 'Invalid Mobile Number',
+  invalidPassword: 'Password must be more than six characters',
+  emailOrMobileRequired: 'Email or Mobile number is required',
+  accountAlreadyInUse: 'Email or Mobile number is already in use!',
+  serverError: 'Internal Server Error. Please try again!',
+};
 
 module.exports = {
 
@@ -52,49 +64,41 @@ the account verification message.)`,
     success: {
       statusCode: 200,
       responseType: 'success',
-      description: 'Account created successfully.'
     },
 
     invalid: {
       statusCode: 400,
       responseType: 'badRequest',
-      description: 'Invalid Request',
     },
 
     invalidUsername: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Username must be alphanumeric with 3 to 50 characters',
     },
 
     invalidEmail: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Invalid Email ID',
     },
 
     invalidMobile: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Invalid Mobile Number',
     },
 
     invalidPassword: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Password must be more than six characters',
     },
 
     emailOrMobileRequired: {
       statusCode: 400,
       responseType: 'validationError',
-      description: 'Email or Mobile number is required',
     },
 
     accountAlreadyInUse: {
       statusCode: 409,
       responseType: 'conflict',
-      description: 'Email or Mobile number is already in use!',
     },
 
     serverError: {
@@ -108,13 +112,13 @@ the account verification message.)`,
     const validate = (field, value, exitType) => {
       try {
         if (!value || ! _.trim(_.isEmpty(value))) {
-          throw exitType;
+          throw exits[exitType](errorMessages[exitType]);
         }
 
         User.validate(field, value);
       }
       catch(e) {
-        throw exitType;
+        throw exits[exitType](errorMessages[exitType]);
       }
     };
 
@@ -126,7 +130,7 @@ the account verification message.)`,
     user.username = username;
 
     if (!email && !mobile) {
-      throw 'emailOrMobileRequired';
+      throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
     }
 
     if (email) {
@@ -148,7 +152,7 @@ the account verification message.)`,
     const doesUserExist = await User.findOne().where(uniqueUserCheckClause);
 
     if (doesUserExist) {
-      throw 'accountAlreadyInUse';
+      throw exits.accountAlreadyInUse(errorMessages.accountAlreadyInUse);
     }
 
     // set account status to be confirmed for DEFAULT users

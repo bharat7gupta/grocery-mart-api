@@ -1,6 +1,5 @@
-module.exports = async function validationError() {
+module.exports = async function validationError(errorMessage) {
 	const errorCode = this.res.get('X-Exit');
-	const errorMessage = this.res.get('X-Exit-Description');
 
 	return this.res.json({
 		code: errorCode,
