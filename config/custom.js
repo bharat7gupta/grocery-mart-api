@@ -115,5 +115,6 @@ module.exports.custom = {
   otpNumDigits: 6,
   otpExpiryTime: 5 * 60 * 1000, // 5 mins in ms
   maxOTPCountPerDay: 10,
+  passwordResetExpiryTime: 3 * 60 * 1000, // 3 mins in ms
 
 };

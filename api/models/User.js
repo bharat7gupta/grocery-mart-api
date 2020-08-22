@@ -109,6 +109,12 @@ email status until they click the link in the confirmation email.`
       example: 1502844074211
     },
 
+    passwordResetExpiry: {
+      type: 'number',
+      description: 'When password reset is initiated then we set a time limit within which the user must reset his password',
+      example: 1502844074211
+    }
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝

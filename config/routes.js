@@ -36,7 +36,8 @@ module.exports.routes = {
   // '/api/v1/account/logout':                           { action: 'account/logout' },
   // 'PUT   /api/v1/account/update-profile':             { action: 'account/update-profile' },
   'POST   /api/v1/account/login':                        { action: 'account/login' },
-  'POST  /api/v1/account/signup':                       { action: 'account/signup' },
+  'POST  /api/v1/account/signup':                        { action: 'account/signup' },
+  'POST  /api/v1/account/password-reset':                { action: 'account/password-reset' },
   'POST  /api/v1/otp/generate':                          { action: 'otp/generate' },
   'POST  /api/v1/otp/validate':                          { action: 'otp/validate' },
 

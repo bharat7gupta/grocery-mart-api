@@ -5,7 +5,6 @@ const errorMessages = {
   emailOrMobileRequired: 'Email or Mobile number is required',
   invalidEmail: 'Invalid Email ID',
   invalidMobile: 'Invalid Mobile Number',
-  invalidPassword: 'Password must be more than six characters',
   notFound: 'User not found.',
   invalidRequest: 'Invalid Request.',
   somethingWentWrong: 'Something went wrong. Please try again',
@@ -27,13 +26,6 @@ module.exports = {
 		mobile: {
 			type: 'string',
 			description: 'Mobile number required if account created with mobile number'
-    },
-
-    password: {
-      type: 'string',
-      maxLength: 200,
-      example: 'passwordlol',
-      description: 'The unencrypted password to use for the new account.'
     },
 
     otp: {
@@ -64,11 +56,6 @@ module.exports = {
     },
 
     invalidMobile: {
-      statusCode: 400,
-      responseType: 'validationError',
-    },
-
-    invalidPassword: {
       statusCode: 400,
       responseType: 'validationError',
     },
@@ -115,7 +102,7 @@ module.exports = {
 
     let uniqueUserCheckClause;
 
-    const { email, mobile, password, otp, otpPurpose } = inputs;
+    const { email, mobile, otp, otpPurpose } = inputs;
 
 		if (!email && !mobile) {
       throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
@@ -131,7 +118,6 @@ module.exports = {
       uniqueUserCheckClause = { mobile };
     }
 
-    validate('password', password, 'invalidPassword');
     validate('otpPurpose', otpPurpose, 'invalidRequest');
 
     // check if user exists
@@ -173,12 +159,15 @@ module.exports = {
     else if (user.otpPurpose === constants.OTP_PURPOSE.PASSWORD_RESET &&
       user.accountStatus === constants.ACCOUNT_STATUS.PASSWORD_RESET
     ) {
+      const currentTime = (new Date()).getTime();
+      const passwordResetExpiry = currentTime + sails.config.custom.passwordResetExpiryTime;
+
       const updatedUser = await User.updateOne(uniqueUserCheckClause)
         .set({
           otp: '',
           otpPurpose: '',
           otpExpiresAt: 0,
-          accountStatus: constants.ACCOUNT_STATUS.CONFIRMED
+          passwordResetExpiry,
         });
 
       if (!updatedUser) {
