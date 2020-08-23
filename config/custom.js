@@ -107,9 +107,6 @@ module.exports.custom = {
   *                                                                          *
   ***************************************************************************/
   // …
-
-  mailgunApiKey: '007b1ee9f61a14077922f820c047e8b8-f7d0b107-1ef963ee',
-  mailgunDomain: 'sandboxae36c91905ed433782994bed28466dbc.mailgun.org',
   mailFrom: 'E-Vendor <info@evendor.org>',
 
   otpNumDigits: 6,

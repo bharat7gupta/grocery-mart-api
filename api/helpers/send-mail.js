@@ -23,8 +23,8 @@ module.exports = {
 
 	fn: async function(inputs) {
 		const mailer = mailgun({
-			apiKey: sails.config.custom.mailgunApiKey,
-			domain: sails.config.custom.mailgunDomain,
+			apiKey: process.env.MAILGUN_API_KEY,
+			domain: process.env.MAILGUN_DOMAIN,
 		});
 
 		const { subject, to, templateFile, templateData } = inputs;
