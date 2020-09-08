@@ -24,5 +24,9 @@ module.exports.policies = {
   'legal/view-terms': true,
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
-
+  'home-page-config/set-config': true,
+  'home-page-config/get-all': true,
+  'product/save': true,
+  'product/get': true,
+  'product/get-by-ids': true
 };
