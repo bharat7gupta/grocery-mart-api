@@ -41,7 +41,7 @@ module.exports.routes = {
   'POST  /api/v1/otp/generate':                          { action: 'otp/generate' },
   'POST  /api/v1/otp/validate':                          { action: 'otp/validate' },
   'POST  /api/v1/homepageconfig/set-config':             { action: 'homepageconfig/set-config' },
-  'GET   /api/v1/homepageconfig/get':                    { action: 'homepageconfig/get' },
+  'POST   /api/v1/homepageconfig/get':                   { action: 'homepageconfig/get' },
   'POST   /api/v1/product/save':                         { action: 'product/save' },
   'GET   /api/v1/product/get':                           { action: 'product/get' },
   'POST   /api/v1/product/get-by-ids':                   { action: 'product/get-by-ids' }
