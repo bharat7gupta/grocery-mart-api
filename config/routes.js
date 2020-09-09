@@ -40,8 +40,8 @@ module.exports.routes = {
   'POST  /api/v1/account/password-reset':                { action: 'account/password-reset' },
   'POST  /api/v1/otp/generate':                          { action: 'otp/generate' },
   'POST  /api/v1/otp/validate':                          { action: 'otp/validate' },
-  'POST  /api/v1/home-page-config/set-config':           { action: 'home-page-config/set-config' },
-  'GET   /api/v1/home-page-config/get-all':              { action: 'home-page-config/get-all' },
+  'POST  /api/v1/homepageconfig/set-config':           { action: 'homepageconfig/set-config' },
+  'GET   /api/v1/homepageconfig/get-all':              { action: 'homepageconfig/get-all' },
   'POST   /api/v1/product/save':                         { action: 'product/save' },
   'GET   /api/v1/product/get':                           { action: 'product/get' },
   'POST   /api/v1/product/get-by-ids':                   { action: 'product/get-by-ids' }
