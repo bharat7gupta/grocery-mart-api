@@ -25,10 +25,21 @@
   },
   "tags": [
     {
+      "name": "HomePageConfig",
+      "description": "Sails blueprint actions for the **HomePageConfig** model"
+    },
+    {
+      "name": "Product",
+      "description": "Sails blueprint actions for the **Product** model"
+    },
+    {
       "name": "Login"
     },
     {
       "name": "Signup"
+    },
+    {
+      "name": "Password Reset"
     },
     {
       "name": "Generate OTP"
@@ -39,6 +50,92 @@
   ],
   "components": {
     "schemas": {
+      "homepageconfig": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/homepageconfig-without-required-constraint"
+          }
+        ]
+      },
+      "homepageconfig-without-required-constraint": {
+        "type": "object",
+        "description": "Sails ORM Model **HomePageConfig**",
+        "properties": {
+          "createdAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "updatedAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "top-banner-1": {},
+          "top-banner-2": {},
+          "top-banner-3": {},
+          "puzzle-left": {},
+          "puzzle-right-top": {},
+          "puzzle-right-bottom": {},
+          "feature-banner": {},
+          "offer-banner": {},
+          "feature-products": {},
+          "offer-products": {},
+          "most-popular-products": {}
+        }
+      },
+      "product": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/product-without-required-constraint"
+          }
+        ]
+      },
+      "product-without-required-constraint": {
+        "type": "object",
+        "description": "Sails ORM Model **Product**",
+        "properties": {
+          "createdAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "updatedAt": {
+            "type": "number",
+            "format": "double"
+          },
+          "id": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "productId": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "productImage": {
+            "type": "string"
+          },
+          "buyingOptions": {},
+          "preferences": {},
+          "keywords": {},
+          "description": {
+            "type": "string"
+          },
+          "disclaimer": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true,
+            "example": true
+          }
+        }
+      },
       "user": {
         "type": "object",
         "allOf": [
@@ -155,6 +252,12 @@
             "format": "double",
             "description": "A JS timestamp (epoch ms) representing the moment at which this user most recently interacted with the backend while logged in (or 0 if they have not interacted with the backend at all yet).",
             "example": 1502844074211
+          },
+          "passwordResetExpiry": {
+            "type": "number",
+            "format": "double",
+            "description": "When password reset is initiated then we set a time limit within which the user must reset his password",
+            "example": 1502844074211
           }
         }
       }
@@ -248,6 +351,12 @@
         ],
         "responses": {
           "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Success"
+          },
+          "403": {
             "description": "Success",
             "content": {
               "application/json": {
@@ -255,27 +364,20 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "Logged in successfully!"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "The provided email and password combination does not\n      match any user in the database."
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "The provided email and password combination does not\n      match any user in the database."
-                    },
-                    {
-                      "type": "string",
-                      "description": "Please confirm your account and then try logging in."
+                      "description": "Success"
                     }
                   ]
                 }
               }
             }
-          },
-          "400": {
-            "description": "Email or Mobile number is required"
           },
           "404": {
             "description": "Resource not found"
@@ -345,7 +447,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Account created successfully."
+            "description": "Success"
           },
           "400": {
             "description": "Success",
@@ -355,27 +457,27 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "Invalid Request"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Username must be alphanumeric with 3 to 50 characters"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Email ID"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Mobile Number"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Password must be more than six characters"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Email or Mobile number is required"
+                      "description": "Success"
                     }
                   ]
                 }
@@ -386,7 +488,105 @@
             "description": "Resource not found"
           },
           "409": {
-            "description": "Email or Mobile number is already in use!"
+            "description": "Success"
+          },
+          "500": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/account/password-reset": {
+      "post": {
+        "summary": "Password Reset",
+        "description": "Password Reset API",
+        "tags": [
+          "Password Reset"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The email address for the new account, e.g. m@example.com."
+          },
+          {
+            "in": "query",
+            "name": "mobile",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The phone number for the new account, e.g. 6234567890"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "passwordlol",
+              "maxLength": 200
+            },
+            "description": "The unencrypted password to use for the new account."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Success"
+                    },
+                    {
+                      "type": "string",
+                      "description": "Not found"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found"
           },
           "500": {
             "description": "Success"
@@ -439,11 +639,11 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "OTP sent successfully."
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Maximum OTP retries reached. Please try again tomorrow."
+                      "description": "Success"
                     }
                   ]
                 }
@@ -458,23 +658,23 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "Email or Mobile number is required"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Email ID"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Mobile Number"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "User not found."
+                      "description": "Not found"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Request."
+                      "description": "Success"
                     }
                   ]
                 }
@@ -485,7 +685,7 @@
             "description": "Resource not found"
           },
           "500": {
-            "description": "Something went wrong. Please try again"
+            "description": "Success"
           }
         }
       }
@@ -518,17 +718,6 @@
           },
           {
             "in": "query",
-            "name": "password",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "passwordlol",
-              "maxLength": 200
-            },
-            "description": "The unencrypted password to use for the new account."
-          },
-          {
-            "in": "query",
             "name": "otp",
             "required": false,
             "schema": {
@@ -555,11 +744,11 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "OTP Verified!"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Your OTP has expired. Please get a new OTP"
+                      "description": "Success"
                     }
                   ]
                 }
@@ -574,31 +763,27 @@
                   "oneOf": [
                     {
                       "type": "string",
-                      "description": "Email or Mobile number is required"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Email ID"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Mobile Number"
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Password must be more than six characters"
+                      "description": "Not found"
                     },
                     {
                       "type": "string",
-                      "description": "User not found."
+                      "description": "Success"
                     },
                     {
                       "type": "string",
-                      "description": "Invalid Request."
-                    },
-                    {
-                      "type": "string",
-                      "description": "Entered OTP in incorrect."
+                      "description": "Success"
                     }
                   ]
                 }
@@ -609,7 +794,236 @@
             "description": "Resource not found"
           },
           "500": {
-            "description": "Something went wrong. Please try again"
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/homepageconfig/set-config": {
+      "post": {
+        "summary": "Set config",
+        "tags": [
+          "HomePageConfig"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "altText",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "navigatingUrl",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "secure_url",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "productId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sectionIndex",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/homepageconfig/get-all": {
+      "get": {
+        "summary": "Get all home page configs",
+        "tags": [
+          "HomePageConfig"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/product/save": {
+      "post": {
+        "summary": "Save Product - Create or Edit",
+        "description": "Save product - Create or Edit. If product id is provided then we edit the product else we create a new one",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "productId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "productName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "productImage",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "buyingOptions",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "in": "query",
+            "name": "preferences",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "in": "query",
+            "name": "keywords",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "in": "query",
+            "name": "description",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "disclaimer",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isActive",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "400": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/product/get": {
+      "get": {
+        "summary": "Get",
+        "description": "Get product.",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/product/get-by-ids": {
+      "post": {
+        "summary": "Get by ids",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "productIds",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

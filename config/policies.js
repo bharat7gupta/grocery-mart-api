@@ -25,7 +25,7 @@ module.exports.policies = {
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
   'homepageconfig/set-config': true,
-  'homepageconfig/get-all': true,
+  'homepageconfig/get': true,
   'product/save': true,
   'product/get': true,
   'product/get-by-ids': true
