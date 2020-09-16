@@ -1,48 +1,20 @@
 
 module.exports = {
 	attributes: {
-		"top-banner-1": {
+		"customer": {
 			type: 'json',
 		},
 
-		"top-banner-2": {
+		"wholesaler": {
 			type: 'json',
 		},
 
-		"top-banner-3": {
+		"dates": {
 			type: 'json',
 		},
 
-		"puzzle-left": {
+		"restaurant": {
 			type: 'json',
-		},
-
-		"puzzle-right-top": {
-			type: 'json',
-		},
-
-		"puzzle-right-bottom": {
-			type: 'json',
-		},
-
-		"feature-banner": {
-			type: 'json',
-		},
-
-		"offer-banner": {
-			type: 'json',
-		},
-
-		"feature-products": {
-			type: 'json',
-		},
-
-		"offer-products": {
-			type: 'json',
-		},
-
-		"most-popular-products": {
-			type: 'json'
 		}
 	}
 }

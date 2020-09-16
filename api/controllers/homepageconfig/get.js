@@ -9,7 +9,9 @@ module.exports = {
   description: '',
 
   inputs: {
-
+    type: {
+      type: 'string'
+    }
   },
 
   exits: {
@@ -30,11 +32,11 @@ module.exports = {
 
     if (config && config.length > 0) {
       let currentConfig = config[0];
-      delete currentConfig.id;
-      delete currentConfig.createdAt;
-      delete currentConfig.updatedAt;
-      this.res.json({ code: "success", data: currentConfig });
-      return;
+
+      if (currentConfig && inputs.type && currentConfig[inputs.type]) {
+        this.res.json({ code: "success", data: currentConfig[inputs.type] });
+        return;
+      }
     }
 
     throw exits.serverError(errorMessages.serverError);

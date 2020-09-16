@@ -5,6 +5,9 @@ module.exports = {
   description: '',
 
   inputs: {
+    type: {
+      type: 'string',
+    },
     key: {
       type: 'string'
     },
@@ -38,35 +41,45 @@ module.exports = {
 
     if (config && config.length > 0) {
       const currentConfig = config[0];
+      const currentConfigByCurrentType = currentConfig[inputs.type];
       let updatedConfig;
 
       if (inputs.navigatingUrl && inputs.secure_url) {
         updatedConfig = await HomePageConfig.updateOne({ id: currentConfig.id })
           .set({
             ...currentConfig,
-            [inputs.key]: {
-              altText: inputs.altText,
-              navigatingUrl: inputs.navigatingUrl,
-              secure_url: inputs.secure_url
+            [inputs.type]: {
+              ...currentConfigByCurrentType,
+              [inputs.key]: {
+                altText: inputs.altText,
+                navigatingUrl: inputs.navigatingUrl,
+                secure_url: inputs.secure_url
+              }
             }
           });
       }
       else if (["feature-products", "most-popular-products", "offer-products"].indexOf(inputs.key) >= 0) {
         if (inputs.sectionIndex !== "" && inputs.sectionIndex !== undefined && !isNaN(inputs.sectionIndex)) {
-          let products = currentConfig[inputs.key];
+          let products = currentConfigByCurrentType[inputs.key];
           products[inputs.sectionIndex] = inputs.productId;
 
           updatedConfig = await HomePageConfig.updateOne({ id: currentConfig.id })
             .set({
               ...currentConfig,
-              [inputs.key]: products
+              [inputs.type]: {
+                ...currentConfigByCurrentType,
+                [inputs.key]: products
+              }
             });
         }
         else {
           updatedConfig = await HomePageConfig.updateOne({ id: currentConfig.id })
             .set({
               ...currentConfig,
-              [inputs.key]: (currentConfig[inputs.key] || []).concat([ inputs.productId ])
+              [inputs.type]: {
+                ...currentConfigByCurrentType,
+                [inputs.key]: (currentConfig[inputs.key] || []).concat([ inputs.productId ])
+              }
             });
         }
       }
@@ -74,7 +87,10 @@ module.exports = {
         updatedConfig = await HomePageConfig.updateOne({ id: currentConfig.id })
           .set({
             ...currentConfig,
-            [inputs.key]: null
+            [inputs.type]: {
+              ...currentConfigByCurrentType,
+              [inputs.key]: null
+            }
           })
       }
 
@@ -82,10 +98,8 @@ module.exports = {
         throw exits.somethingWentWrong(errorMessages.somethingWentWrong);
       }
 
-      this.res.json({ code: "success", data: updatedConfig });
+      this.res.json({ code: "success", data: updatedConfig[inputs.type] });
     }
-
-    console.log(inputs);
 
     return;
 
