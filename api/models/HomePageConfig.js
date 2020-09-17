@@ -15,6 +15,9 @@ module.exports = {
 
 		"restaurant": {
 			type: 'json',
+		},
+		"preferences": {
+			type: 'json'
 		}
 	}
 }

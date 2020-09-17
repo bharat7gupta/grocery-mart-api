@@ -3,6 +3,8 @@ var keyMirror = require('key-mirror');
 const USER_TYPES = keyMirror({
 	DEFAULT: null,
 	WHOLESALER: null,
+	DATES: null,
+	RESTAURANT: null,
 	DRIVER: null,
 });
 

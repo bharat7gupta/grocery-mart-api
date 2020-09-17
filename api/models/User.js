@@ -36,6 +36,11 @@ module.exports = {
       example: '2$28a8eabna301089103-13948134nad'
     },
 
+    isAdmin: {
+      type: 'boolean',
+      defaultsTo: false
+    },
+
     username: {
       type: 'string',
       required: true,

@@ -11,7 +11,16 @@ module.exports = {
     productId: {
       type: 'string'
     },
+    marketPlaces: {
+      type: 'json'
+    },
     productName: {
+      type: 'string'
+    },
+    category: {
+      type: 'string'
+    },
+    brand: {
       type: 'string'
     },
     productImage: {
