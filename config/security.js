@@ -33,7 +33,8 @@ module.exports.security = {
     allowOrigins: [
       'http://localhost',
       'https://grocery-mart-api.herokuapp.com',
-      'https://grocery-mart-admin-ui.vercel.app'
+      'https://grocery-mart-admin-ui.vercel.app',
+      'https://grocery-pwa-react.vercel.app'
     ],
     allowCredentials: true,
   },
