@@ -22,9 +22,11 @@ module.exports.session = {
 
 
 
-  // cookie: {
-  //   domain: 'grocery-mart-api.herokuapp.com'
-  // },
+  cookie: {
+    // domain: 'grocery-mart-api.herokuapp.com'
+    sameSite: 'none',
+    secure: true
+  },
   /***************************************************************************
   *                                                                          *
   * Customize when built-in session support will be skipped.                 *
