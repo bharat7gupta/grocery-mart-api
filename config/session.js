@@ -22,11 +22,11 @@ module.exports.session = {
 
 
 
-  cookie: {
-    // domain: 'grocery-mart-admin-ui.vercel.app',
-    // sameSite: 'none',
-    secure: true
-  },
+  // cookie: {
+  //   // domain: 'grocery-mart-admin-ui.vercel.app',
+  //   // sameSite: 'none',
+  //   // secure: true
+  // },
   /***************************************************************************
   *                                                                          *
   * Customize when built-in session support will be skipped.                 *
