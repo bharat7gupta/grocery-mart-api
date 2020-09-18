@@ -30,7 +30,11 @@ module.exports.security = {
 
   cors: {
     allRoutes: true,
-    allowOrigins: '*',
+    allowOrigins: [
+      'http://localhost',
+      'https://grocery-mart-api.herokuapp.com',
+      'https://grocery-mart-admin-ui.vercel.app'
+    ],
     allowCredentials: true,
   },
 
@@ -44,6 +48,6 @@ module.exports.security = {
   *                                                                           *
   ****************************************************************************/
 
-  csrf: true
+  csrf: false
 
 };
