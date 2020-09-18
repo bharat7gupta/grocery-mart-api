@@ -23,7 +23,7 @@ module.exports.session = {
 
 
   cookie: {
-    // domain: 'grocery-mart-api.herokuapp.com',
+    domain: 'grocery-mart-admin-ui.vercel.app',
     // sameSite: 'none',
     secure: true
   },
