@@ -37,6 +37,7 @@ module.exports = {
     const searchQuery = {
       category: { $regex: new RegExp(`^${category}$`, 'i') },
       isActive: true,
+      marketPlaces: { $in: [ type ] }
     };
 
     const productsPromise = new Promise((resolve, reject) => {

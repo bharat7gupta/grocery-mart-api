@@ -45,6 +45,8 @@ module.exports.routes = {
   'POST   /api/v1/product/save':                         { action: 'product/save' },
   'POST   /api/v1/product/category':                     { action: 'product/category' },
   'POST   /api/v1/product/get':                          { action: 'product/get' },
-  'POST   /api/v1/product/get-by-ids':                   { action: 'product/get-by-ids' }
+  'POST   /api/v1/product/get-by-ids':                   { action: 'product/get-by-ids' },
+  'POST   /api/v1/product/auto-suggest':                   { action: 'product/auto-suggest' },
+  'POST   /api/v1/product/search':                   { action: 'product/search' }
 
 };

@@ -1,7 +1,7 @@
 
 module.exports = {
 	attributes: {
-		"customer": {
+		"retail": {
 			type: 'json',
 		},
 

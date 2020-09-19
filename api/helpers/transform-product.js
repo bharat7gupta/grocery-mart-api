@@ -19,13 +19,13 @@ module.exports = {
 
   fn: function (inputs) {
     if (inputs.product) {
-      const buyingOptions = product.buyingOptions.map(buyingOption => {
+      const buyingOptions = inputs.product.buyingOptions.map(buyingOption => {
         const { inventory, isWholesale, ...restParams } = buyingOption;
         restParams.inStock = !!inventory && Number(inventory) > 0
         return restParams;
       });
 
-      return { ...product, buyingOptions }
+      return { ...inputs.product, buyingOptions, id: undefined }
     }
     
     return null;

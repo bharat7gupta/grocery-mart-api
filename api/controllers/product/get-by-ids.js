@@ -25,14 +25,16 @@ module.exports = {
       this.res.json({ code: 'success', data: [] });
     }
 
-    const products = await Product.find({ productId : inputs.productIds });
+    const projetion = sails.config.custom.productProjection;
+    const allowedFields = Object.keys(sails.config.custom.productProjection).filter(t => !!projetion[t]);
+    const products = await Product.find({
+      'where': { productId : inputs.productIds },
+      'select': allowedFields
+    });
 
     this.res.json({
       code: 'success',
-      data: products.map(product => {
-        const { createdAt, updatedAt, id, ...rest } = product;
-        return rest;
-      })
+      data: products.map(product => sails.helpers.transformProduct(product))
     });
 
   }

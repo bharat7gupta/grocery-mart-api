@@ -29,5 +29,7 @@ module.exports.policies = {
   'product/save': true,
   'product/get': true,
   'product/get-by-ids': true,
-  'product/category': true
+  'product/category': true,
+  'product/auto-suggest': true,
+  'product/search': true
 };
