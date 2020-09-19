@@ -43,7 +43,8 @@ module.exports.routes = {
   'POST  /api/v1/homepageconfig/set-config':             { action: 'homepageconfig/set-config' },
   'POST   /api/v1/homepageconfig/get':                   { action: 'homepageconfig/get' },
   'POST   /api/v1/product/save':                         { action: 'product/save' },
-  'POST   /api/v1/product/get':                           { action: 'product/get' },
+  'POST   /api/v1/product/category':                     { action: 'product/category' },
+  'POST   /api/v1/product/get':                          { action: 'product/get' },
   'POST   /api/v1/product/get-by-ids':                   { action: 'product/get-by-ids' }
 
 };

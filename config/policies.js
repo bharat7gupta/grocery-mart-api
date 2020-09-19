@@ -28,5 +28,6 @@ module.exports.policies = {
   'homepageconfig/get': true,
   'product/save': true,
   'product/get': true,
-  'product/get-by-ids': true
+  'product/get-by-ids': true,
+  'product/category': true
 };

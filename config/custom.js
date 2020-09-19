@@ -114,4 +114,17 @@ module.exports.custom = {
   maxOTPCountPerDay: 10,
   passwordResetExpiryTime: 3 * 60 * 1000, // 3 mins in ms
 
+  productProjection: {
+    _id: false,
+    productId: true,
+    productName: true,
+    category: true,
+    brand: true,
+    productImage: true,
+    buyingOptions: true,
+    preferences: true,
+    description: true,
+    disclaimer: true,
+    isActive: true
+  },
 };
