@@ -52,21 +52,14 @@ module.exports = {
     let produtsBySuggestion;
     let priceQuery;
     let productProjection = sails.config.custom.productProjection;
-    let start = 0, end = 30;
+    let start = inputs.start || 0;
+    let end = inputs.end || 30;
 
     if (price && (price.min || price.max)) {
       price.min = price.min || 0;
       price.max = price.max || 999999;
       const priceCondition = { price: { $gte: price.min, $lte: price.max } };
       priceQuery = { $elemMatch: priceCondition };
-    }
-
-    if (inputs.start) {
-      start = inputs.start;
-    }
-
-    if (inputs.end) {
-      end = inputs.end;
     }
 
     // query db by suggested result
