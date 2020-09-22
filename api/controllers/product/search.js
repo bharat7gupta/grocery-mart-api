@@ -30,6 +30,12 @@ module.exports = {
     end: {
       type: 'number'
     },
+    brands: {
+      type: 'json'
+    },
+    excludeOutOfStock: {
+      type: 'boolean'
+    }
   },
 
 
@@ -42,18 +48,17 @@ module.exports = {
 
 
   fn: async function (inputs) {
-    const { searchTerm, selectedSuggestion, type = 'retail', price } = inputs;
+    const { searchTerm, selectedSuggestion, type = 'retail', price, excludeOutOfStock = false } = inputs;
 
     if (!searchTerm || searchTerm.trim() === '') {
       throw exits.searchTermRequired(errorMessages.searchTermRequired);
     }
 
     // setup input defaults
-    let produtsBySuggestion;
     let priceQuery;
-    let productProjection = sails.config.custom.productProjection;
     let start = inputs.start || 0;
     let end = inputs.end || 30;
+    let productProjection = sails.config.custom.productProjection;
 
     if (price && (price.min || price.max)) {
       price.min = price.min || 0;
@@ -62,69 +67,35 @@ module.exports = {
       priceQuery = { $elemMatch: priceCondition };
     }
 
-    // query db by suggested result
-    if (selectedSuggestion) {
-      const productsBySuggestionQuery = {
-        $or: [
-          { productName: { $regex: new RegExp(`^${selectedSuggestion}`, 'i') } },
-          { category: { $regex: new RegExp(`^${selectedSuggestion}`, 'i') } },
-          { brand: { $regex: new RegExp(`^${selectedSuggestion}`, 'i') } },
-          { description: { $regex: new RegExp(`${selectedSuggestion}`, 'i') } },
-          { keywords: { $regex: new RegExp(`^${selectedSuggestion}`, 'i') } },
-        ],
-        isActive: true,
-        marketPlaces: { $in: [ type ] }
-      };
-
-      if (priceQuery) {
-        productsBySuggestionQuery.buyingOptions = priceQuery;
-      }
-
-      const productsBySuggestionPromise = new Promise((resolve, reject) => {
-        Product.native(function(err, collection) {
-          if (err) reject(err);
-  
-          collection
-            .find(productsBySuggestionQuery, productProjection)
-            .skip(start)
-            .limit(end - start)
-            .toArray(function (err, results) {
-              if (err) reject(err);
-              resolve(results);
-            });
-        });
-      });
-
-      try {
-        let searchResultsByProduct = await productsBySuggestionPromise;
-        produtsBySuggestion = searchResultsByProduct && searchResultsByProduct
-          .map(product => sails.helpers.transformProduct(product, price));
-      } catch(e) {}
-    }
-
-    // query to search by search text
-    const searchQueryByProduct = {
+    // query db for results
+    const searchQuery = {
       $or: [
-        { productName: { $regex: new RegExp(`^${searchTerm}`, 'i') } },
-        { category: { $regex: new RegExp(`^${searchTerm}`, 'i') } },
-        { brand: { $regex: new RegExp(`^${searchTerm}`, 'i') } },
-        { description: { $regex: new RegExp(`${searchTerm}`, 'i') } },
-        { keywords: { $regex: new RegExp(`^${searchTerm}`, 'i') } },
+        { productName: { $regex: new RegExp(`^${selectedSuggestion}|${searchTerm}`, 'i') } },
+        { category: { $regex: new RegExp(`^${selectedSuggestion}|${searchTerm}`, 'i') } },
+        { brand: { $regex: new RegExp(`^${selectedSuggestion}|${searchTerm}`, 'i') } },
+        { description: { $regex: new RegExp(`${selectedSuggestion}|${searchTerm}`, 'i') } },
+        { keywords: { $regex: new RegExp(`^${selectedSuggestion}|${searchTerm}`, 'i') } },
       ],
       isActive: true,
       marketPlaces: { $in: [ type ] }
     };
 
+    const brandsQuery = { ...searchQuery };
+
     if (priceQuery) {
-      searchQueryByProduct.buyingOptions = priceQuery;
+      searchQuery.buyingOptions = priceQuery;
     }
 
-    const resultsBySearchPromise = new Promise((resolve, reject) => {
+    if (inputs.brands && inputs.brands.length > 0) {
+      searchQuery.brand = { $in: inputs.brands }
+    }
+
+    const searchResultPromise = new Promise((resolve, reject) => {
       Product.native(function(err, collection) {
         if (err) reject(err);
 
         collection
-          .find(searchQueryByProduct, productProjection)
+          .find(searchQuery, productProjection)
           .skip(start)
           .limit(end - start)
           .toArray(function (err, results) {
@@ -134,27 +105,36 @@ module.exports = {
       });
     });
 
-    try {
-      let resultsBySearch = await resultsBySearchPromise;
-      let resultsByProduct = resultsBySearch && resultsBySearch
-        .map(product => sails.helpers.transformProduct(product, price));
+    // get all available brands
+    const brandsPromise = new Promise((resolve, reject) => {
+      Product.native(function(err, collection) {
+        if (err) reject(err);
 
-      if (produtsBySuggestion && produtsBySuggestion.length > 0) {
-        for(let i=0; i<produtsBySuggestion.length; i++) {
-          if (!resultsBySearch.find(p => p.productId === produtsBySuggestion[i].productId)) {
-            resultsByProduct.unshift(produtsBySuggestion[i]);
-          }
-        }
-      }
+        collection
+          .distinct('brand', brandsQuery, function (err, brands) {
+            if (err) reject(err);
+            resolve(brands);
+          })
+      });
+    });
+
+    try {
+      let searchResultsData = await searchResultPromise;
+      const brands = await brandsPromise;
+
+      let searchResults = searchResultsData && searchResultsData
+        .map(product => sails.helpers.transformProduct(product, price, excludeOutOfStock))
+        .filter(product => !(excludeOutOfStock && product.buyingOptions.length === 0));
 
       this.res.json({
         code: 'success',
-        data: resultsByProduct.slice(0, end - start)
-      })
+        data: {
+          results: searchResults,
+          brands
+        }
+      });
     } catch(e) {
       this.res.json({ code: 'SERVER_ERROR' });
     }
   }
-
-
 };
