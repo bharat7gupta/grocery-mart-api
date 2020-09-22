@@ -6,6 +6,9 @@ module.exports = {
   inputs: {
     product: {
       type: 'json'
+    },
+    price: {
+      type: 'json'
     }
   },
 
@@ -18,8 +21,18 @@ module.exports = {
   },
 
   fn: function (inputs) {
-    if (inputs.product) {
-      const buyingOptions = inputs.product.buyingOptions.map(buyingOption => {
+    const { product, price } = inputs;
+
+    if (product) {
+      let buyingOptions = inputs.product.buyingOptions;
+
+      if (price) {
+        buyingOptions = buyingOptions.filter(bo => {
+          return bo.price >= price.min && bo.price <= price.max
+        });
+      }
+
+      buyingOptions = buyingOptions.map(buyingOption => {
         const { inventory, isWholesale, ...restParams } = buyingOption;
         restParams.inStock = !!inventory && Number(inventory) > 0
         return restParams;

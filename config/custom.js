@@ -123,6 +123,7 @@ module.exports.custom = {
     productImage: true,
     buyingOptions: true,
     preferences: true,
+    keyFeatures: true,
     description: true,
     disclaimer: true,
     isActive: true

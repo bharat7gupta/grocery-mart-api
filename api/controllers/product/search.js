@@ -20,7 +20,10 @@ module.exports = {
     },
     selectedSuggestion: {
       type: 'string'
-    }
+    },
+    price: {
+      type: 'json'
+    },
   },
 
 
@@ -33,12 +36,22 @@ module.exports = {
 
 
   fn: async function (inputs) {
-    const { searchTerm, selectedSuggestion, type = 'retail' } = inputs;
+    const { searchTerm, selectedSuggestion, type = 'retail', price } = inputs;
 
     if (!searchTerm || searchTerm.trim() === '') {
       throw exits.searchTermRequired(errorMessages.searchTermRequired);
     }
+
     let produtsBySuggestion;
+    let priceQuery;
+    let productProjection = sails.config.custom.productProjection;
+
+    if (price && (price.min || price.max)) {
+      price.min = price.min || 0;
+      price.max = price.max || 999999;
+      const priceCondition = { price: { $gte: price.min, $lte: price.max } };
+      priceQuery = { $elemMatch: priceCondition };
+    }
 
     if (selectedSuggestion) {
       const productsBySuggestionQuery = {
@@ -53,12 +66,16 @@ module.exports = {
         marketPlaces: { $in: [ type ] }
       };
 
+      if (priceQuery) {
+        productsBySuggestionQuery.buyingOptions = priceQuery;
+      }
+
       const productsBySuggestionPromise = new Promise((resolve, reject) => {
         Product.native(function(err, collection) {
           if (err) reject(err);
   
           collection
-            .find(productsBySuggestionQuery, sails.config.custom.productProjection)
+            .find(productsBySuggestionQuery, productProjection)
             .toArray(function (err, results) {
               if (err) reject(err);
               resolve(results);
@@ -69,7 +86,7 @@ module.exports = {
       try {
         let searchResultsByProduct = await productsBySuggestionPromise;
         produtsBySuggestion = searchResultsByProduct && searchResultsByProduct
-          .map(product => sails.helpers.transformProduct(product));
+          .map(product => sails.helpers.transformProduct(product, price));
       } catch(e) {}
     }
 
@@ -85,12 +102,16 @@ module.exports = {
       marketPlaces: { $in: [ type ] }
     };
 
+    if (priceQuery) {
+      searchQueryByProduct.buyingOptions = priceQuery;
+    }
+
     const resultsBySearchPromise = new Promise((resolve, reject) => {
       Product.native(function(err, collection) {
         if (err) reject(err);
 
         collection
-          .find(searchQueryByProduct, sails.config.custom.productProjection)
+          .find(searchQueryByProduct, productProjection)
           .toArray(function (err, results) {
             if (err) reject(err);
             resolve(results);
@@ -101,7 +122,7 @@ module.exports = {
     try {
       let resultsBySearch = await resultsBySearchPromise;
       let resultsByProduct = resultsBySearch && resultsBySearch
-        .map(product => sails.helpers.transformProduct(product));
+        .map(product => sails.helpers.transformProduct(product, price));
 
       if (produtsBySuggestion && produtsBySuggestion.length > 0) {
         for(let i=0; i<produtsBySuggestion.length; i++) {

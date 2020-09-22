@@ -49,7 +49,7 @@ module.exports = {
 
         collection
           .find(searchQueryByProduct, { productName: true, _id: false })
-          .limit(5)
+          .limit(10)
           .toArray(function (err, results) {
             if (err) reject(err);
             resolve(results);
@@ -61,7 +61,7 @@ module.exports = {
       let searchResultsByCategory = [];
       let searchResultsByProduct = await resultsByProductPromise;
       const resultsByProduct = searchResultsByProduct && searchResultsByProduct
-        .map(product => `${product.productName} - ${searchTerm}`);
+        .map(product => product.productName);
 
       this.res.json({
         code: 'success',

@@ -35,6 +35,9 @@ module.exports = {
     keywords: {
       type: 'json'
     },
+    keyFeatures: {
+      type: 'string'
+    },
     description: {
       type: 'string'
     },
