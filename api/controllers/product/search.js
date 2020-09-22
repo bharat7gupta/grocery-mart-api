@@ -24,6 +24,12 @@ module.exports = {
     price: {
       type: 'json'
     },
+    start: {
+      type: 'number'
+    },
+    end: {
+      type: 'number'
+    },
   },
 
 
@@ -42,9 +48,11 @@ module.exports = {
       throw exits.searchTermRequired(errorMessages.searchTermRequired);
     }
 
+    // setup input defaults
     let produtsBySuggestion;
     let priceQuery;
     let productProjection = sails.config.custom.productProjection;
+    let start = 0, end = 30;
 
     if (price && (price.min || price.max)) {
       price.min = price.min || 0;
@@ -53,6 +61,15 @@ module.exports = {
       priceQuery = { $elemMatch: priceCondition };
     }
 
+    if (inputs.start) {
+      start = inputs.start;
+    }
+
+    if (inputs.end) {
+      end = inputs.end;
+    }
+
+    // query db by suggested result
     if (selectedSuggestion) {
       const productsBySuggestionQuery = {
         $or: [
@@ -76,6 +93,8 @@ module.exports = {
   
           collection
             .find(productsBySuggestionQuery, productProjection)
+            .skip(start)
+            .limit(end - start)
             .toArray(function (err, results) {
               if (err) reject(err);
               resolve(results);
@@ -90,6 +109,7 @@ module.exports = {
       } catch(e) {}
     }
 
+    // query to search by search text
     const searchQueryByProduct = {
       $or: [
         { productName: { $regex: new RegExp(`^${searchTerm}`, 'i') } },
@@ -112,6 +132,8 @@ module.exports = {
 
         collection
           .find(searchQueryByProduct, productProjection)
+          .skip(start)
+          .limit(end - start)
           .toArray(function (err, results) {
             if (err) reject(err);
             resolve(results);
@@ -134,7 +156,7 @@ module.exports = {
 
       this.res.json({
         code: 'success',
-        data: resultsByProduct
+        data: resultsByProduct.slice(0, end - start)
       })
     } catch(e) {
       this.res.json({ code: 'SERVER_ERROR' });
