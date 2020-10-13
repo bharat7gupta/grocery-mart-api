@@ -74,17 +74,11 @@
             "type": "string",
             "uniqueItems": true
           },
-          "top-banner-1": {},
-          "top-banner-2": {},
-          "top-banner-3": {},
-          "puzzle-left": {},
-          "puzzle-right-top": {},
-          "puzzle-right-bottom": {},
-          "feature-banner": {},
-          "offer-banner": {},
-          "feature-products": {},
-          "offer-products": {},
-          "most-popular-products": {}
+          "retail": {},
+          "wholesaler": {},
+          "dates": {},
+          "restaurant": {},
+          "preferences": {}
         }
       },
       "product": {
@@ -114,7 +108,14 @@
           "productId": {
             "type": "string"
           },
+          "marketPlaces": {},
           "productName": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "brand": {
             "type": "string"
           },
           "productImage": {
@@ -183,6 +184,10 @@
             "description": "Securely hashed representation of the user's login password.",
             "example": "2$28a8eabna301089103-13948134nad"
           },
+          "isAdmin": {
+            "type": "boolean",
+            "default": false
+          },
           "username": {
             "type": "string",
             "pattern": "^[a-zA-Z0-9\\s]{3,}$",
@@ -198,6 +203,8 @@
             "enum": [
               "DEFAULT",
               "WHOLESALER",
+              "DATES",
+              "RESTAURANT",
               "DRIVER"
             ]
           },
@@ -347,6 +354,14 @@
               "maxLength": 200
             },
             "description": "The unencrypted password to try in this attempt, e.g. \"passwordlol\"."
+          },
+          {
+            "in": "query",
+            "name": "isAdmin",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -808,6 +823,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
             "name": "key",
             "required": false,
             "schema": {
@@ -869,13 +892,22 @@
         }
       }
     },
-    "/api/v1/homepageconfig/get-all": {
-      "get": {
+    "/api/v1/homepageconfig/get": {
+      "post": {
         "summary": "Get all home page configs",
         "tags": [
           "HomePageConfig"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -907,7 +939,29 @@
           },
           {
             "in": "query",
+            "name": "marketPlaces",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "in": "query",
             "name": "productName",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "brand",
             "required": false,
             "schema": {
               "type": "string"
@@ -980,8 +1034,49 @@
         }
       }
     },
+    "/api/v1/product/category": {
+      "post": {
+        "summary": "Category",
+        "description": "Category product.",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "400": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/product/get": {
-      "get": {
+      "post": {
         "summary": "Get",
         "description": "Get product.",
         "tags": [
@@ -1018,6 +1113,95 @@
         "responses": {
           "200": {
             "description": "The requested resource"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/product/auto-suggest": {
+      "post": {
+        "summary": "Auto suggest",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "searchTerm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "400": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/product/search": {
+      "post": {
+        "summary": "Search",
+        "description": "Search product.",
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "searchTerm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "selectedSuggestion",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested resource"
+          },
+          "400": {
+            "description": "Success"
           },
           "404": {
             "description": "Resource not found"

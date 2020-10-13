@@ -55,6 +55,11 @@ password attempt.`,
       responseType: 'success',
     },
 
+    successWithData: {
+      statusCode: 200,
+      responseType: 'successWithData',
+    },
+
     emailOrMobileRequired: {
       statusCode: 400,
       responseType: 'validationError',
@@ -118,10 +123,12 @@ password attempt.`,
     this.req.session.userName = userRecord.username;
     this.req.session.userType = userRecord.userType;
 
-    this.res.json({
-      code: 'success',
-      data: { username: userRecord.username }
-    });
+    // this.res.json({
+    //   code: 'success',
+    //   data: { username: userRecord.username }
+    // });
+
+    exits.successWithData({ username: userRecord.username })
 
   }
 
