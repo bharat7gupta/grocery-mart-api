@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const constants = require('../../../config/constants');
 
 const errorMessages = {
@@ -123,12 +124,16 @@ password attempt.`,
     this.req.session.userName = userRecord.username;
     this.req.session.userType = userRecord.userType;
 
-    // this.res.json({
-    //   code: 'success',
-    //   data: { username: userRecord.username }
-    // });
+    const jwtKey = sails.config.custom.jwtKey;
 
-    exits.successWithData({ username: userRecord.username })
+    exits.successWithData({
+      username: userRecord.username,
+      token: jwt.sign(
+        { id: userRecord.id, type: userRecord.userType },
+        jwtKey,
+        { expiresIn: '365d' }
+      )
+    })
 
   }
 

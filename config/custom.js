@@ -114,6 +114,8 @@ module.exports.custom = {
   maxOTPCountPerDay: 10,
   passwordResetExpiryTime: 3 * 60 * 1000, // 3 mins in ms
 
+  jwtKey: 'to-be-set-in-env',
+
   productProjection: {
     _id: false,
     productId: true,

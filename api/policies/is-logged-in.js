@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 /**
  * is-logged-in
  *
@@ -15,8 +17,20 @@ module.exports = async function (req, res, proceed) {
   // or, if this is the last policy, the relevant action.
   // > For more about where `req.me` comes from, check out this app's
   // > custom hook (`api/hooks/custom/index.js`).
-  if (req.session.userType && req.session.userName) {
-    return proceed();
+  if (req.headers['token']) {
+    try {
+      const decoded = jwt.verify(req.headers['token'], sails.config.custom.jwtKey);
+      const userRecord = await User.findOne({
+        id: decoded.id,
+        userType: decoded.type,
+      });
+
+      if (userRecord) {
+        return proceed();
+      }
+    } catch(e) {
+      return res.unauthorized({ code: 'FORBIDDEN', message: 'You would need to log in.' });    
+    }
   }
 
   //--•
