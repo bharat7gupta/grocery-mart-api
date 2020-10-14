@@ -31,5 +31,7 @@ module.exports.policies = {
   'product/get-by-ids': true,
   'product/category': true,
   'product/auto-suggest': true,
-  'product/search': true
+  'product/search': true,
+  'cart/update': 'is-logged-in',
+  'cart/state': 'is-logged-in',
 };
