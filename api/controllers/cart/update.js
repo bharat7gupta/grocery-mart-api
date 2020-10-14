@@ -82,7 +82,7 @@ module.exports = {
 
     const product = await Product.findOne({ productId });
 
-    if (!product) {
+    if (!product || !product.isActive) {
       throw exits.productDoesNotExist(errorMessages.productDoesNotExist);
     }
 

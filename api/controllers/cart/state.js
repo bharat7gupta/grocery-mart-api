@@ -45,16 +45,21 @@ module.exports = {
       const productsWithQuantity = products.map(p => {
         const inCartProduct = cartStateProducts.find(pr => pr.productId === p.productId);
         const { id, buyingOptions, preferences, ...restProps } = p;
+        const buyingOption = buyingOptions.find(bo => bo.unit === inCartProduct.unit);
+        const { inventory, ...restBuyingOption } = buyingOption;
 
         return {
           ...restProps,
-          buyingOption: buyingOptions.find(bo => bo.unit === inCartProduct.unit),
+          buyingOption: restBuyingOption,
           preference: preferences.find(pref => pref === inCartProduct.preference),
           quantity: inCartProduct.quantity,
         };
       });
 
-      exits.successWithData({ products: productsWithQuantity });
+      exits.successWithData({
+        products: productsWithQuantity,
+        priceSummary: sails.helpers.getPriceSummary(productsWithQuantity)
+      });
     } catch(e) {
       exits.serverError(errorMessages.serverError);
     }
