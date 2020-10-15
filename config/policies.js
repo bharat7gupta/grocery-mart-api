@@ -17,6 +17,8 @@ module.exports.policies = {
   'account/login': true,
   'account/logout': true,
   'account/password-reset': true,
+  'account/address/save': 'is-logged-in',
+  'account/address/get': 'is-logged-in',
   'otp/*': true,
   'view-homepage-or-redirect': true,
   'view-faq': true,

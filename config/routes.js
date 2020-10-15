@@ -38,6 +38,8 @@ module.exports.routes = {
   'POST   /api/v1/account/login':                        { action: 'account/login' },
   'POST  /api/v1/account/signup':                        { action: 'account/signup' },
   'POST  /api/v1/account/password-reset':                { action: 'account/password-reset' },
+  'POST  /api/v1/account/address/save':                  { action: 'account/address/save' },
+  'POST  /api/v1/account/address/get':                  { action: 'account/address/get' },
   'POST  /api/v1/otp/generate':                          { action: 'otp/generate' },
   'POST  /api/v1/otp/validate':                          { action: 'otp/validate' },
   'POST  /api/v1/homepageconfig/set-config':             { action: 'homepageconfig/set-config' },
@@ -49,6 +51,6 @@ module.exports.routes = {
   'POST   /api/v1/product/auto-suggest':                 { action: 'product/auto-suggest' },
   'POST   /api/v1/product/search':                       { action: 'product/search' },
   'POST   /api/v1/cart/update':                          { action: 'cart/update' },
-  'POST   /api/v1/cart/state':                          { action: 'cart/state' }
+  'POST   /api/v1/cart/state':                          { action: 'cart/state' },
 
 };
