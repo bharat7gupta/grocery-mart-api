@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = {
-  friendlyName: 'Get',
+  friendlyName: 'Get saved addresses for a particular user',
 
-  description: 'Get address.',
+  description: 'Get saved addresses for a particular user',
 
   inputs: {
 
