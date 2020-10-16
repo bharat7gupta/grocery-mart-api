@@ -9,7 +9,7 @@ const errorMessages = {
 
 module.exports = {
 
-  friendlyName: 'Init',
+  friendlyName: 'Init checkout.',
 
   description: 'Init checkout.',
 
