@@ -21,7 +21,7 @@ module.exports = {
     const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
     const addresses = await Address.find({ userId: decodedData.id });
     const mappedAddresses = addresses.map(address => {
-      const { id, createdAt, updatedAt, ...addressParams } = address;
+      const { id, createdAt, updatedAt, userId, ...addressParams } = address;
       return addressParams;
     });
 

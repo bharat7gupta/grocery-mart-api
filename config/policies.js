@@ -36,4 +36,5 @@ module.exports.policies = {
   'product/search': true,
   'cart/update': 'is-logged-in',
   'cart/state': 'is-logged-in',
+  'checkout/init': 'is-logged-in',
 };

@@ -107,8 +107,14 @@ module.exports = {
     if (isNaN(inventoryCount) || inventoryCount === 0) {
       throw exits.outOfStock(errorMessages.outOfStock);
     } else if (inventoryCount < quantity) {
+      const reservationCountResult = await Reservation.find({
+        where: { productId },
+        select: [ 'quantity' ],
+      });
+      const reservationCount = reservationCountResult.reduce((sum, current) => sum + current.quantity, 0);
+      const availableQuantity = inventoryCount - reservationCount;
       throw exits.limitedQuantityAvailable(
-        "Only " + inventoryCount + errorMessages.limitedQuantityAvailable
+        "Only " + availableQuantity + errorMessages.limitedQuantityAvailable
       );
     }
 
