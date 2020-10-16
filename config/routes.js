@@ -54,5 +54,6 @@ module.exports.routes = {
   'POST   /api/v1/cart/state':                           { action: 'cart/state' },
   'POST   /api/v1/checkout/init':                        { action: 'checkout/init' },
   'POST   /api/v1/payment/init':                         { action: 'payment/init' },
+  'POST   /api/v1/payment/update-status':                { action: 'payment/update-status' },
 
 };

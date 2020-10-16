@@ -38,4 +38,5 @@ module.exports.policies = {
   'cart/state': 'is-logged-in',
   'checkout/init': 'is-logged-in',
   'payment/init': 'is-logged-in',
+  'payment/update-status': 'is-logged-in',
 };
