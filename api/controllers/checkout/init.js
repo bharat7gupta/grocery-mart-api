@@ -90,16 +90,17 @@ module.exports = {
       });
 
       // get price summary
-      const productsWithBuyingOption = products.map(p => {
-        const inCartProduct = cartStateProducts.find(pr => pr.productId === p.productId);
-        const { id, buyingOptions, preferences, ...restProps } = p;
-        const buyingOption = buyingOptions.find(bo => bo.unit === inCartProduct.unit);
+      const productsWithBuyingOption = cartStateProducts.map(cp => {
+        const product = products.find(prd => prd.productId === cp.productId);
+        const { id, buyingOptions, preferences, ...restProps } = product;
+        const buyingOption = buyingOptions.find(bo => bo.unit === cp.unit);
         const { inventory, ...restBuyingOption } = buyingOption;
 
         return {
           ...restProps,
           buyingOption: restBuyingOption,
-          quantity: inCartProduct.quantity,
+          preference: preferences.find(pref => pref === cp.preference),
+          quantity: cp.quantity,
         };
       });
 
