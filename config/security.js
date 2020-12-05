@@ -32,7 +32,7 @@ module.exports.security = {
     allRoutes: true,
     allowOrigins: '*',
     allowCredentials: false,
-    allowRequestHeaders: 'token',
+    allowRequestHeaders: 'token,content-type',
   },
 
 
