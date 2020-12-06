@@ -35,30 +35,37 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { addressId } = inputs;
-    const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
+    try {
+      const { addressId } = inputs;
+      const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
-    if (!addressId) {
-      exits.invalidAddress(errorMessages.invalidAddress);
+      if (!addressId) {
+        exits.invalidAddress(errorMessages.invalidAddress);
+      }
+
+      // check if address is valid and exists in db
+      const selectedAddress = await Address.findOne({
+        userId: decodedData.id,
+        addressId
+      });
+
+      if (!selectedAddress) {
+        exits.invalidAddress(errorMessages.invalidAddress);
+      }
+
+      // check if there are any reservations
+      const reservations = await Reservation.find({ userId: decodedData.id });
+
+      if (!reservations || reservations.length === 0) {
+        exits.checkoutSessionTimeout(errorMessages.checkoutSessionTimeout);
+      }
+
+      exits.successWithData(reservations);
+    } catch (e) {
+      this.res.json({
+        code: 'SERVER_ERROR',
+        message: 'Something went wrong. Please try again!'
+      });
     }
-
-    // check if address is valid and exists in db
-    const selectedAddress = await Address.findOne({
-      userId: decodedData.id,
-      addressId
-    });
-
-    if (!selectedAddress) {
-      exits.invalidAddress(errorMessages.invalidAddress);
-    }
-
-    // check if there are any reservations
-    const reservations = await Reservation.find({ userId: decodedData.id });
-
-    if (!reservations || reservations.length === 0) {
-      exits.checkoutSessionTimeout(errorMessages.checkoutSessionTimeout);
-    }
-
-    exits.successWithData(reservations);
   }
 };

@@ -40,6 +40,7 @@ module.exports.routes = {
   'POST  /api/v1/account/password-reset':                { action: 'account/password-reset' },
   'POST  /api/v1/account/address/save':                  { action: 'account/address/save' },
   'POST  /api/v1/account/address/get':                   { action: 'account/address/get' },
+  'POST  /api/v1/account/address/delete':                { action: 'account/address/delete' },
   'POST  /api/v1/otp/generate':                          { action: 'otp/generate' },
   'POST  /api/v1/otp/validate':                          { action: 'otp/validate' },
   'POST  /api/v1/homepageconfig/set-config':             { action: 'homepageconfig/set-config' },

@@ -14,6 +14,9 @@ module.exports = {
   inputs: {
     status: {
       type: 'string',
+    },
+    paymentMode: {
+      type: 'string',
     }
   },
 
@@ -30,7 +33,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { status } = inputs;
+    const { status, paymentMode } = inputs;
     const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
     if (!status) {
@@ -60,6 +63,7 @@ module.exports = {
       // create order entry
       const order = await Order.create({
         status,
+        paymentMode,
         products: cartStateProducts,
         priceSummary: sails.helpers.getPriceSummary(productsWithBuyingOption),
       }).fetch();

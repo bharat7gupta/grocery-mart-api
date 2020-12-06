@@ -125,7 +125,7 @@ module.exports = {
       throw exits.pincodeRequired(errorMessages.pincodeRequired);
     }
 
-    if (! /^\d{6}$/.test(pincode)) {
+    if (pincode && !/^\d{6}$/.test(pincode)) {
       throw exits.invalidPincode(errorMessages.invalidPincode);
     }
 
