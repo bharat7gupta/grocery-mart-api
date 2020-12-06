@@ -63,6 +63,7 @@ module.exports = {
       // create order entry
       const order = await Order.create({
         status,
+        userId: decodedData.id,
         paymentMode,
         products: cartStateProducts,
         priceSummary: sails.helpers.getPriceSummary(productsWithBuyingOption),

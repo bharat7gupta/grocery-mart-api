@@ -40,4 +40,5 @@ module.exports.policies = {
   'checkout/init': 'is-logged-in',
   'payment/init': 'is-logged-in',
   'payment/update-status': 'is-logged-in',
+  'orders/get': 'is-logged-in',
 };

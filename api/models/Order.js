@@ -8,6 +8,10 @@
 module.exports = {
 
   attributes: {
+    userId: {
+      type: 'string',
+    },
+
     products: {
       type: 'json',
     },
