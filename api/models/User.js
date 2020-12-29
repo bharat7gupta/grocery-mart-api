@@ -118,7 +118,19 @@ email status until they click the link in the confirmation email.`
       type: 'number',
       description: 'When password reset is initiated then we set a time limit within which the user must reset his password',
       example: 1502844074211
-    }
+    },
+
+    altPhoneNumber: {
+      type: 'string',
+    },
+
+    landmark: {
+      type: 'string',
+    },
+
+    licenseNumber: {
+      type: 'string',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

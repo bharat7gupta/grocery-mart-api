@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const errorMessages = {
   searchTermRequired: "Please provide a search term to search with."
 };
@@ -9,9 +11,6 @@ module.exports = {
   description: '',
 
   inputs: {
-    type: {
-      type: 'string'
-    },
     searchTerm: {
       type: 'string'
     }
@@ -25,11 +24,14 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { searchTerm, type = 'retail' } = inputs;
+    const { searchTerm } = inputs;
 
     if (!searchTerm || searchTerm.trim() === '') {
       throw exits.searchTermRequired(errorMessages.searchTermRequired);
     }
+
+    const decoded = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
+    const type = decoded.type === 'DEFAULT' ? 'retail' : decoded.type;
 
     const searchQueryByProduct = {
       $or: [

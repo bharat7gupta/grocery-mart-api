@@ -56,7 +56,22 @@ the account verification message.)`,
     userType:  {
       type: 'string',
       example: 'DEFAULT, WHOLESALER, DRIVER',
-    }
+    },
+
+    altPhoneNumber: {
+      type: 'string',
+      example: '8735683645',
+    },
+
+    landmark: {
+      type: 'string',
+      example: 'andheri gali ke peeche',
+    },
+
+    licenseNumber: {
+      type: 'string',
+      example: 'AFSGD2347567',
+    },
   },
 
   exits: {
@@ -122,81 +137,96 @@ the account verification message.)`,
       }
     };
 
-    const { username, userType, email, mobile, password } = inputs;
-    let user = {};
-    let uniqueUserCheckClause;
+    try {
+      const { username, userType, email, mobile, password, altPhoneNumber, landmark, licenseNumber } = inputs;
+      let user = {};
+      let uniqueUserCheckClause = { isAdmin: false };
 
-    validate('username', username, 'invalidUsername');
-    user.username = username;
+      validate('username', username, 'invalidUsername');
+      user.username = username;
 
-    if (!email && !mobile) {
-      throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
-    }
+      if (!email && !mobile) {
+        throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
+      }
 
-    if (email) {
-      validate('email', email, 'invalidEmail');
-      user.email = email.toLowerCase();
-      uniqueUserCheckClause = { email: user.email };
-    }
-
-    if (mobile) {
-      validate('mobile', mobile, 'invalidMobile');
-      user.mobile = mobile;
-      uniqueUserCheckClause = { mobile };
-    }
-
-    validate('password', password, 'invalidPassword');
-    user.password = password;
-
-    // check if user exists
-    const doesUserExist = await User.findOne().where(uniqueUserCheckClause);
-
-    if (doesUserExist) {
-      throw exits.accountAlreadyInUse(errorMessages.accountAlreadyInUse);
-    }
-
-    // set account status to be confirmed for DEFAULT users
-    // set userType if non-DEFAULT
-    if (!userType || userType === constants.USER_TYPES.DEFAULT) {
-      user.accountStatus = constants.ACCOUNT_STATUS.CONFIRMED;
-    }
-    else {
-      user.userType = userType;
-    }
-
-    // Build up data for the new user record and save it to the database.
-    // (Also use `fetch` to retrieve the new ID so that we can use it below.)
-    var newUserRecord = await User.create({
-      ...user,
-      tosAcceptedByIp: this.req.ip
-    })
-    .intercept({name: 'UsageError'}, 'invalid')
-    .fetch();
-
-    // Store the user's new id in their session.
-    this.req.session.userId = newUserRecord.id;
-
-    // send account activation mail (with OTP) to the current user
-    if (!userType || userType === constants.USER_TYPES.DEFAULT) {
-      // if email is provided then send welcome email
       if (email) {
-        await sails.helpers.sendMail.with({
-          to: email,
-          subject: 'Welcome to E-Vendor',
-          templateData: {
-            username,
-          },
-          templateFile: 'welcomeEmail',
-        });
+        validate('email', email, 'invalidEmail');
+        user.email = email.toLowerCase();
+        uniqueUserCheckClause.email = user.email;
       }
 
-      // TODO: if mobile then send welcome message
       if (mobile) {
-
+        validate('mobile', mobile, 'invalidMobile');
+        user.mobile = mobile;
+        uniqueUserCheckClause.mobile = mobile;
       }
+
+      validate('password', password, 'invalidPassword');
+      user.password = password;
+
+      // check if user exists
+      const doesUserExist = await User.findOne().where(uniqueUserCheckClause);
+
+      if (doesUserExist) {
+        throw exits.accountAlreadyInUse(errorMessages.accountAlreadyInUse);
+      }
+
+      // set account status to be confirmed for DEFAULT users
+      // set userType if non-DEFAULT
+      if (!userType || userType === constants.USER_TYPES.DEFAULT) {
+        user.accountStatus = constants.ACCOUNT_STATUS.CONFIRMED;
+      }
+      else {
+        user.userType = userType;
+      }
+
+      if (altPhoneNumber) {
+        user.altPhoneNumber = altPhoneNumber;
+      }
+
+      if (licenseNumber) {
+        user.licenseNumber = licenseNumber;
+      }
+
+      if (landmark) {
+        user.landmark = landmark;
+      }
+
+      // Build up data for the new user record and save it to the database.
+      // (Also use `fetch` to retrieve the new ID so that we can use it below.)
+      var newUserRecord = await User.create({
+        ...user,
+        tosAcceptedByIp: this.req.ip
+      })
+      .intercept({name: 'UsageError'}, 'invalid')
+      .fetch();
+
+      // Store the user's new id in their session.
+      this.req.session.userId = newUserRecord.id;
+
+      // send account activation mail (with OTP) to the current user
+      if (!userType || userType === constants.USER_TYPES.DEFAULT) {
+        // if email is provided then send welcome email
+        if (email) {
+          await sails.helpers.sendMail.with({
+            to: email,
+            subject: 'Welcome to E-Vendor',
+            templateData: {
+              username,
+            },
+            templateFile: 'welcomeEmail',
+          });
+        }
+
+        // TODO: if mobile then send welcome message
+        if (mobile) {
+
+        }
+      }
+
+      exits.success();
+    } catch (e) {
+      exits.serverError(errorMessages.serverError);
     }
-
-    exits.success();
   }
-
 };

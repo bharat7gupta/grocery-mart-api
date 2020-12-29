@@ -1,20 +1,16 @@
+const jwt = require('jsonwebtoken');
+
 const errorMessages = {
   searchTermRequired: "Please provide a search term to search with."
 };
 
 module.exports = {
 
-
   friendlyName: 'Search',
-
 
   description: 'Search product.',
 
-
   inputs: {
-    type: {
-      type: 'string'
-    },
     searchTerm: {
       type: 'string'
     },
@@ -38,7 +34,6 @@ module.exports = {
     }
   },
 
-
   exits: {
     searchTermRequired: {
       statusCode: 400,
@@ -46,13 +41,15 @@ module.exports = {
     }
   },
 
-
   fn: async function (inputs) {
-    const { searchTerm, selectedSuggestion, type = 'retail', price, excludeOutOfStock = false } = inputs;
+    const { searchTerm, selectedSuggestion, price, excludeOutOfStock = false } = inputs;
 
     if (!searchTerm || searchTerm.trim() === '') {
       throw exits.searchTermRequired(errorMessages.searchTermRequired);
     }
+
+    const decoded = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
+    const type = decoded.type === 'DEFAULT' ? 'retail' : decoded.type;
 
     // setup input defaults
     let priceQuery;
