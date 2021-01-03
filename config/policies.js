@@ -41,4 +41,6 @@ module.exports.policies = {
   'payment/init': 'is-logged-in',
   'payment/update-status': 'is-logged-in',
   'orders/get': 'is-logged-in',
+  'delivery-route/get': 'is-super-admin',
+  'delivery-route/save': 'is-super-admin'
 };
