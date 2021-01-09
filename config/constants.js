@@ -11,6 +11,7 @@ const USER_TYPES = keyMirror({
 const ACCOUNT_STATUS = keyMirror({
 	CONFIRMED: null,
 	UNCONFIRMED: null,
+	BLOCKED: null,
 	PASSWORD_RESET: null,
 });
 
