@@ -22,6 +22,18 @@ module.exports = {
 
     status: {
       type: 'string',
+    },
+
+    addressId: {
+      type: 'string',
+    },
+
+    driverId: {
+      type: 'string',
+    },
+
+    customerSignature: {
+      type: 'string',
     }
 
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗

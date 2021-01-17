@@ -41,9 +41,12 @@ module.exports.policies = {
   'payment/init': 'is-logged-in',
   'payment/update-status': 'is-logged-in',
   'orders/get': 'is-logged-in',
+  'orders/get-received-orders': 'is-super-admin',
   'delivery-route/get': 'is-super-admin',
   'delivery-route/save': 'is-super-admin',
   'customers/get': 'is-super-admin',
   'customers/update-status': 'is-super-admin',
-
+  'drivers/get': 'is-super-admin',
+  'orders/update-status': true,
+  'driver/get-assigned-orders': 'is-driver',
 };

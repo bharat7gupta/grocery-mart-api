@@ -57,9 +57,13 @@ module.exports.routes = {
   'POST  /api/v1/payment/init':                         { action: 'payment/init' },
   'POST  /api/v1/payment/update-status':                { action: 'payment/update-status' },
   'POST  /api/v1/orders/get':                           { action: 'orders/get' },
+  'POST  /api/v1/orders/get-received-orders':           { action: 'orders/get-received-orders' },
   'POST  /api/v1/delivery-route/get':                   { action: 'delivery-route/get' },
   'POST  /api/v1/delivery-route/save':                  { action: 'delivery-route/save' },
   'POST  /api/v1/customers/get':                        { action: 'customers/get' },
+  'POST  /api/v1/drivers/get':                          { action: 'drivers/get' },
   'POST  /api/v1/customers/update-status':              { action: 'customers/update-status' },
+  'POST  /api/v1/orders/update-status':                 { action: 'orders/update-status' },
+  'POST  /api/v1/driver/get-assigned-orders':           { action: 'driver/get-assigned-orders' },
 
 };
