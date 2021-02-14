@@ -20,6 +20,9 @@ module.exports = {
 	  },
 	  customerSignature: {
 		  type: 'string',
+	  },
+	  comment: {
+		  type: 'string',
 	  }
 	},
   
@@ -36,7 +39,7 @@ module.exports = {
 
 	fn: async function (inputs, exits) {
 		try {
-			const { id, status, driverId, customerSignature } = inputs;
+			const { id, status, driverId, customerSignature, comment } = inputs;
 			const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
 			const userRecord = await User.findOne({
@@ -64,6 +67,11 @@ module.exports = {
 				return;
 			}
 
+			if (decodedData.type === 'DRIVER' && status === 'CANCELLED' && !comment) {
+				exits.invalidRequest('Provide cancellation reason');
+				return;
+			}
+
 			let updatedData = { status };
 	
 			if (driverId) {
@@ -72,6 +80,10 @@ module.exports = {
 
 			if (customerSignature) {
 				updatedData.customerSignature = customerSignature;
+			}
+
+			if (comment) {
+				updatedData.comment = comment;
 			}
 
 			const updatedOrder = await Order.updateOne({ id })

@@ -34,6 +34,10 @@ module.exports = {
 
     customerSignature: {
       type: 'string',
+    },
+
+    comment: {
+      type: 'string',
     }
 
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
