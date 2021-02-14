@@ -43,7 +43,8 @@ module.exports = {
           username: user.username,
           address: address,
           status: o.status,
-          customerSignature: o.customerSignature
+          customerSignature: o.customerSignature,
+          paymentMode: o.paymentMode,
         }
       });
 

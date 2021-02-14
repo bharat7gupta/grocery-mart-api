@@ -38,7 +38,11 @@ module.exports = {
 
     comment: {
       type: 'string',
-    }
+    },
+
+    paymentMode: {
+      type: 'string',
+    },
 
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
