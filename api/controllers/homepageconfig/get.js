@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const errorMessages = {
   serverError: 'Internal Server Error. Please try again!',
 };
@@ -27,6 +29,15 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
+    let userType;
+
+    if (decodedData.type) {
+      userType = decodedData.type === 'DEFAULT' ? 'retail' : decodedData.type.toLowerCase();
+    } else {
+      userType = inputs.type;
+    }
+
     const categoriesPromise = new Promise((resolve) => {
       Product.native(function(err, collection) {
         collection.distinct('category', function(err, categories) {
@@ -52,11 +63,11 @@ module.exports = {
       const currentConfig = config[0];
       const preferences = currentConfig.preferences;
 
-      if (currentConfig && inputs.type && currentConfig[inputs.type]) {
+      if (currentConfig && userType && currentConfig[userType]) {
         this.res.json({
           code: "success",
           data: {
-            ...currentConfig[inputs.type],
+            ...currentConfig[userType],
             categories,
             brands,
             preferences
