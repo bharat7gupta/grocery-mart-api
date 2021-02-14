@@ -18,7 +18,7 @@ module.exports = {
     try {
       const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
       const userId = decodedData.id;
-      const orders = await Order.find({ userId });
+      const orders = await Order.find({ userId }).sort('createdAt DESC');
 
       const productIds = orders.reduce((acc, curr) => {
         const orderProductIds = curr.products.map(p => p.productId);
