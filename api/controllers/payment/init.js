@@ -54,13 +54,14 @@ module.exports = {
       }
 
       // check if there are any reservations
-      const reservations = await Reservation.find({ userId: decodedData.id });
+      const reservation = await Reservation.updateOne({ userId: decodedData.id })
+        .set({ addressId });
 
-      if (!reservations || reservations.length === 0) {
+      if (!reservation) {
         exits.checkoutSessionTimeout(errorMessages.checkoutSessionTimeout);
       }
 
-      exits.successWithData(reservations);
+      exits.successWithData(reservation);
     } catch (e) {
       this.res.json({
         code: 'SERVER_ERROR',

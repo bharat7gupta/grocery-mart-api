@@ -60,10 +60,15 @@ module.exports = {
         };
       });
 
+      // get reservation addressId
+      const reservation = await Reservation.findOne({ userId: decodedData.id });
+      const { addressId } = reservation;
+
       // create order entry
       const order = await Order.create({
         status,
         userId: decodedData.id,
+        addressId,
         paymentMode,
         products: cartStateProducts,
         priceSummary: sails.helpers.getPriceSummary(productsWithBuyingOption),
