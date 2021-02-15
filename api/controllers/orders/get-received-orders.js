@@ -61,10 +61,13 @@ module.exports = {
       const users = await User.find({
         where: { id: userIds },
       });
+      const addressses = await Address.find({ userId: userIds });
 
       const orderWithAllDetails = orderWithProductDetails.map(o => {
         const user = users.find(u => u.id === o.userId);
-        return { ...o, user };
+        const address = addressses.find(a => a.addressId === o.addressId);
+
+        return { ...o, user, address };
       });
 
       this.res.json({
