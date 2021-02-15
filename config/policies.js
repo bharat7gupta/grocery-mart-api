@@ -47,6 +47,7 @@ module.exports.policies = {
   'customers/get': 'is-super-admin',
   'customers/update-status': 'is-super-admin',
   'drivers/get': 'is-super-admin',
+  'drivers/get-all': 'is-super-admin',
   'orders/update-status': true,
   'driver/get-assigned-orders': 'is-driver',
 };

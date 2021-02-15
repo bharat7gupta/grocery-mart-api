@@ -17,7 +17,8 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const users = await User.find({ isAdmin: false, userType: { '!=': 'DEFAULT' } });
+      const validCustomerTypes = ['WHOLESALER', 'DATES', 'RESTAURANT'];
+      const users = await User.find({ isAdmin: false, userType: validCustomerTypes }).sort('createdAt DESC');
 
       const mappedUsers = users.map(user => sails.helpers.transformUser(user));
 
