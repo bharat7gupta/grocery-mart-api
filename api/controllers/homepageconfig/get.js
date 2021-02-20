@@ -32,10 +32,10 @@ module.exports = {
     const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
     let userType;
 
-    if (decodedData.type) {
-      userType = decodedData.type === 'DEFAULT' ? 'retail' : decodedData.type.toLowerCase();
-    } else {
+    if (inputs.type) {
       userType = inputs.type;
+    } else {
+      userType = decodedData.type === 'DEFAULT' ? 'retail' : decodedData.type.toLowerCase();
     }
 
     const categoriesPromise = new Promise((resolve) => {
