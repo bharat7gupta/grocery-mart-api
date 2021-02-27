@@ -61,8 +61,8 @@ module.exports = {
       });
 
       // get reservation addressId
-      const reservation = await Reservation.findOne({ userId: decodedData.id });
-      const { addressId } = reservation;
+      const reservation = await Reservation.find({ userId: decodedData.id });
+      const { addressId } = reservation[0];
 
       // create order entry
       const order = await Order.create({

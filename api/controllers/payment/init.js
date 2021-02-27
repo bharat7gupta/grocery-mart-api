@@ -54,8 +54,9 @@ module.exports = {
       }
 
       // check if there are any reservations
-      const reservation = await Reservation.updateOne({ userId: decodedData.id })
-        .set({ addressId });
+      const reservation = await Reservation.update({ userId: decodedData.id })
+        .set({ addressId })
+        .fetch();
 
       if (!reservation) {
         exits.checkoutSessionTimeout(errorMessages.checkoutSessionTimeout);
