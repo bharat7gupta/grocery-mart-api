@@ -6,6 +6,7 @@ const USER_TYPES = keyMirror({
 	DATES: null,
 	RESTAURANT: null,
 	DRIVER: null,
+	SALESMAN: null
 });
 
 const ACCOUNT_STATUS = keyMirror({
