@@ -64,6 +64,7 @@ module.exports = {
         imageUrl,
         gpsLat,
         gpsLong,
+        createdBy: decodedData.id,
         status
       }).fetch();
 

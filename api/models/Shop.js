@@ -34,6 +34,9 @@ module.exports = {
       type: 'number',
       required: true,
     },
+    createdBy: {
+      type: 'string',
+    },
     salesmanId: {
       type: 'string',
     },
