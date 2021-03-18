@@ -21,8 +21,15 @@ const OTP_PURPOSE = keyMirror({
 	PASSWORD_RESET: null,
 });
 
+const SHOP_STATUS = keyMirror({
+	CONFIRMED: null,
+	UNCONFIRMED: null,
+	BLOCKED: null,
+})
+
 module.exports = {
 	USER_TYPES,
 	ACCOUNT_STATUS,
-	OTP_PURPOSE
+	OTP_PURPOSE,
+	SHOP_STATUS
 };
