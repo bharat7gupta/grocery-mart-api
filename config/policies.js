@@ -55,4 +55,5 @@ module.exports.policies = {
   'shop/update-status': 'is-super-admin',
   'shop/get-all': 'is-super-admin',
   'salesman/get-all': 'is-super-admin',
+  'salesman/get-shops': true,
 };
