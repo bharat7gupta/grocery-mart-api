@@ -51,6 +51,7 @@ module.exports.policies = {
   'orders/update-status': true,
   'driver/get-assigned-orders': 'is-driver',
   'shop/add': true,
-  'shop/update-status': true,
-  'shop/get-all': true,
+  'shop/update-status': 'is-super-admin',
+  'shop/get-all': 'is-super-admin',
+  'salesman/get-all': 'is-super-admin',
 };
