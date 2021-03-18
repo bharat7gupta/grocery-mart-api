@@ -34,6 +34,9 @@ module.exports = {
       type: 'number',
       required: true,
     },
+    salesmanId: {
+      type: 'string',
+    },
     status: {
       type: 'string',
       isIn: Object.keys(constants.SHOP_STATUS),
