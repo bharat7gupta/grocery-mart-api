@@ -131,7 +131,6 @@ password attempt.`,
       token: jwt.sign(
         { id: userRecord.id, type: userRecord.userType },
         jwtKey,
-        isAdmin,
         { expiresIn: '365d' }
       )
     })
