@@ -56,4 +56,5 @@ module.exports.policies = {
   'shop/get-all': 'is-super-admin',
   'salesman/get-all': 'is-super-admin',
   'salesman/get-shops': true,
+  'location/add': true,
 };
