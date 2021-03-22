@@ -36,27 +36,10 @@ module.exports = {
     try {
       const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
-      const searchQuery = {
-        $or: [
-          { createdBy: decodedData.id },
-          { salesmanId: decodedData.id }
-        ]
-      };
+      const salesman = await User.findOne({ id: decodedData.id, userType: constants.USER_TYPES.SALESMAN });
+      const { locationId } = salesman;
 
-      const shopsResultPromise = new Promise((resolve, reject) => {
-        Shop.native(function(err, collection) {
-          if (err) reject(err);
-  
-          collection
-            .find(searchQuery)
-            .toArray(function (err, results) {
-              if (err) reject(err);
-              resolve(results);
-            });
-        });
-      });
-
-      const shops = await shopsResultPromise;
+      const shops = await Shop.find({ locationId });
 
       exits.successWithData(shops);
     } catch (e) {
