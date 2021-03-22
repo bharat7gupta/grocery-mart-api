@@ -37,7 +37,7 @@ module.exports = {
     createdBy: {
       type: 'string',
     },
-    salesmanId: {
+    locationId: {
       type: 'string',
     },
     status: {

@@ -4,7 +4,7 @@ var constants = require('../../../config/constants');
 const errorMessages = {
   serverError: 'Internal Server Error. Please try again!',
   invalidRequest: 'Invalid request',
-  invalidSalesmanId: 'Invalid Salesman Id'
+  invalidLocationId: 'Invalid Location Id'
 };
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
     status: {
       type: 'string',
     },
-    salesmanId: {
+    locationId: {
       type: 'string'
     },
   },
@@ -36,17 +36,17 @@ module.exports = {
       responseType: 'validationError',
     },
 
-    invalidSalesmanId: {
+    invalidLocationId: {
       statusCode: 400,
       responseType: 'validationError',
     }
   },
 
   fn: async function (inputs, exits) {
-    const { shopId, status, salesmanId } = inputs;
+    const { shopId, status, locationId } = inputs;
     const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
-    if (!shopId || !status || decodedData.type !== 'admin') {
+    if (!locationId || !status || decodedData.type !== 'admin') {
       exits.invalidRequest(errorMessages.invalidRequest);
       return;
     }
@@ -55,22 +55,18 @@ module.exports = {
 
     try {
       if (status === constants.SHOP_STATUS.CONFIRMED) {
-        if (!salesmanId) {
-          exits.invalidSalesmanId(errorMessages.invalidSalesmanId);
+        if (!locationId) {
+          exits.invalidLocationId(errorMessages.invalidLocationId);
           return;
         }
 
-        const salesman = await User.findOne({
-          id: salesmanId,
-          userType: constants.USER_TYPES.SALESMAN,
-          accountStatus: constants.ACCOUNT_STATUS.CONFIRMED
-        });
-  
-        if (!salesman) {
-          exits.invalidSalesmanId(errorMessages.invalidSalesmanId);
+        const location = await Location.findOne({ id: locationId });
+
+        if (!location) {
+          exits.invalidLocationId(errorMessages.invalidLocationId);
           return;
         } else {
-          updatedData.salesmanId = salesman.id;
+          updatedData.locationId = location.id;
         }
       }
 

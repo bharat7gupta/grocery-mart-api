@@ -6,9 +6,9 @@ const errorMessages = {
 
 module.exports = {
 
-  friendlyName: 'Get all',
+  friendlyName: 'Get all locations',
 
-  description: '',
+  description: 'Get all locations',
 
   inputs: {
 
@@ -28,9 +28,9 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const shops = await Shop.find().sort('createdAt DESC');
+      const locations = await Location.find().sort('name ASC');
 
-      exits.successWithData(shops);
+      exits.successWithData(locations);
     } catch(e) {
       exits.serverError(errorMessages.serverError);
     }
