@@ -30,7 +30,7 @@ module.exports = {
     password: {
       type: 'string',
       required: true,
-      regex: /^\w{6,}$/,
+      regex: /^.{6,}$/,
       description: 'Securely hashed representation of the user\'s login password.',
       protect: true,
       example: '2$28a8eabna301089103-13948134nad'
