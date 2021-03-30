@@ -34,6 +34,7 @@ module.exports = {
 
       const transformedData = (salesmen || []).map(s => ({
         id: s.id,
+        username: s.username,
         email: s.email,
         mobile: s.mobile,
         userType: s.userType,
