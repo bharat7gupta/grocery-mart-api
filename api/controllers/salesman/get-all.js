@@ -40,6 +40,7 @@ module.exports = {
         userType: s.userType,
         accountStatus: s.accountStatus,
         altPhoneNumber: s.altPhoneNumber,
+        locationIds: s.locationIds,
         createdAt: s.createdAt,
         updatedAt: s.updatedAt,
       }));

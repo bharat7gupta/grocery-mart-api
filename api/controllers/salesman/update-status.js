@@ -66,7 +66,7 @@ module.exports = {
           exits.invalidLocationId(errorMessages.invalidLocationId);
           return;
         } else {
-          updatedData.locationId = location.id;
+          updatedData.locationIds = [ location.id ];
         }
       }
 
@@ -76,11 +76,11 @@ module.exports = {
       }).set(updatedData);
 
       if (updatedUserDetails) {
-        const { id, email, mobile, userType, accountStatus, altPhoneNumber, createdAt, updatedAt } = updatedUserDetails;
+        const { id, email, mobile, userType, accountStatus, altPhoneNumber, locationIds, createdAt, updatedAt } = updatedUserDetails;
 
         this.res.json({
           code: 'success',
-          data: { id, email, mobile, userType, accountStatus, altPhoneNumber, createdAt, updatedAt }
+          data: { id, email, mobile, userType, accountStatus, altPhoneNumber, locationIds, createdAt, updatedAt }
         });
       } else {
         exits.invalidRequest(errorMessages.invalidRequest);

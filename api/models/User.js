@@ -136,8 +136,8 @@ email status until they click the link in the confirmation email.`
       type: 'string',
     },
 
-    locationId: {
-      type: 'string',
+    locationIds: {
+      type: 'json',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
