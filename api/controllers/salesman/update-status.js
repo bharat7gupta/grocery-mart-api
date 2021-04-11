@@ -51,7 +51,7 @@ module.exports = {
       return;
     }
 
-    let updatedData = { status };
+    let updatedData = { accountStatus: status };
 
     try {
       if (status === constants.SHOP_STATUS.CONFIRMED) {
