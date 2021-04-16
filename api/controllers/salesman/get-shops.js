@@ -37,11 +37,11 @@ module.exports = {
       const decodedData = jwt.verify(this.req.headers['token'], sails.config.custom.jwtKey);
 
       const salesman = await User.findOne({ id: decodedData.id, userType: constants.USER_TYPES.SALESMAN });
-      const { locationId } = salesman;
+      const { locationIds } = salesman;
 
-      const shops = await Shop.find({ locationId });
+      const shops = await Shop.find({ locationId: locationIds });
 
-      exits.successWithData(shops);
+      exits.successWithData({ locationIds, shops });
     } catch (e) {
       exits.serverError(errorMessages.serverError);
     }
