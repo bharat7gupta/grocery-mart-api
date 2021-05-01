@@ -40,6 +40,9 @@ module.exports = {
     locationId: {
       type: 'string',
     },
+    position: {
+      type: 'number',
+    },
     status: {
       type: 'string',
       isIn: Object.keys(constants.SHOP_STATUS),

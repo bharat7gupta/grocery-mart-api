@@ -31,7 +31,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { locationId } = inputs;
-      const shops = await Shop.find({ locationId }).sort('createdAt DESC');
+      const shops = await Shop.find({ locationId }).sort('position ASC');
 
       exits.successWithData(shops);
     } catch(e) {

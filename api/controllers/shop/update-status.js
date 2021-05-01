@@ -66,6 +66,19 @@ module.exports = {
           exits.invalidLocationId(errorMessages.invalidLocationId);
           return;
         } else {
+          const shop = await Shop.find({
+            where: { locationId },
+            select: ['position'],
+            limit: 1,
+            sort: 'position DESC'
+          });
+
+          if (shop[0] && shop[0].id !== shopId) {
+            updatedData.position = Number(shop[0].position) + 1;
+          } else {
+            updatedData.position = 1;
+          }
+
           updatedData.locationId = location.id;
         }
       }

@@ -52,8 +52,6 @@ module.exports = {
 
     if (decodedData.type !== 'admin' && decodedData.type !== 'SALESMAN') {
       exits.invalidRequest(errorMessages.invalidRequest);
-    } else {
-      status = decodedData.type === 'admin' ? constants.SHOP_STATUS.CONFIRMED : status;
     }
 
     try {

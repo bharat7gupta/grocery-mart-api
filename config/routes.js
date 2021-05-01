@@ -69,6 +69,7 @@ module.exports.routes = {
   'POST  /api/v1/shop/add':                             { action: 'shop/add' },
   'POST  /api/v1/shop/edit':                            { action: 'shop/edit' },
   'POST  /api/v1/shop/update-status':                   { action: 'shop/update-status' },
+  'POST  /api/v1/shop/update-position':                 { action: 'shop/update-position' },
   'POST  /api/v1/salesman/update-status':               { action: 'salesman/update-status' },
   'POST  /api/v1/shop/get-by-location':                 { action: 'shop/get-by-location' },
   'POST  /api/v1/salesman/get-all':                     { action: 'salesman/get-all' },
