@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 var constants = require('../../../config/constants');
 
 const errorMessages = {
@@ -54,13 +53,13 @@ module.exports = {
 
     try {
       const shop = await Shop.findOne({ id: shopId });
-      // check for confirmed shops only
-      const prevPosition = shop.position;
-      const isMovingUp = prevPosition > position;
 
-      if (!shop) {
+      if (!shop || shop.status !== constants.SHOP_STATUS.CONFIRMED) {
         exits.invalidRequest(errorMessages.invalidRequest);
       }
+
+      const prevPosition = shop.position;
+      const isMovingUp = prevPosition > position;
 
       const locationId = shop.locationId;
       const shops = await Shop.find({ locationId });
