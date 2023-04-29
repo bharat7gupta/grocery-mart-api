@@ -107,9 +107,6 @@ module.exports.custom = {
   *                                                                          *
   ***************************************************************************/
   // …
-
-  mailgunApiKey: '007b1ee9f61a14077922f820c047e8b8-f7d0b107-1ef963ee',
-  mailgunDomain: 'sandboxae36c91905ed433782994bed28466dbc.mailgun.org',
   mailFrom: 'E-Vendor <info@evendor.org>',
 
   otpNumDigits: 6,
@@ -117,4 +114,20 @@ module.exports.custom = {
   maxOTPCountPerDay: 10,
   passwordResetExpiryTime: 3 * 60 * 1000, // 3 mins in ms
 
+  jwtKey: 'to-be-set-in-env',
+
+  productProjection: {
+    _id: false,
+    productId: true,
+    productName: true,
+    category: true,
+    brand: true,
+    productImage: true,
+    buyingOptions: true,
+    preferences: true,
+    keyFeatures: true,
+    description: true,
+    disclaimer: true,
+    isActive: true
+  },
 };

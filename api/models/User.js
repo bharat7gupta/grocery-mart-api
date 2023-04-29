@@ -30,10 +30,15 @@ module.exports = {
     password: {
       type: 'string',
       required: true,
-      regex: /^\w{6,}$/,
+      regex: /^.{6,}$/,
       description: 'Securely hashed representation of the user\'s login password.',
       protect: true,
       example: '2$28a8eabna301089103-13948134nad'
+    },
+
+    isAdmin: {
+      type: 'boolean',
+      defaultsTo: false
     },
 
     username: {
@@ -113,6 +118,26 @@ email status until they click the link in the confirmation email.`
       type: 'number',
       description: 'When password reset is initiated then we set a time limit within which the user must reset his password',
       example: 1502844074211
+    },
+
+    altPhoneNumber: {
+      type: 'string',
+    },
+
+    landmark: {
+      type: 'string',
+    },
+
+    licenseNumber: {
+      type: 'string',
+    },
+
+    route: {
+      type: 'string',
+    },
+
+    locationIds: {
+      type: 'json',
     }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

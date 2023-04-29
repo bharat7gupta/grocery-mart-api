@@ -1,4 +1,4 @@
-module.exports = async function conflict(errorMessage) {
+module.exports = async function success(errorMessage) {
 	const errorCode = this.res.get('X-Exit');
 
 	return this.res.json({

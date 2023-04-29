@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const constants = require('../../../config/constants');
 
 const errorMessages = {
@@ -42,6 +43,10 @@ password attempt.`,
       description: 'The unencrypted password to try in this attempt, e.g. "passwordlol".'
     },
 
+    isAdmin: {
+      type: 'boolean',
+    }
+
   },
 
   exits: {
@@ -49,6 +54,11 @@ password attempt.`,
     success: {
       statusCode: 200,
       responseType: 'success',
+    },
+
+    successWithData: {
+      statusCode: 200,
+      responseType: 'successWithData',
     },
 
     emailOrMobileRequired: {
@@ -76,15 +86,23 @@ password attempt.`,
 
   fn: async function (inputs, exits) {
 
-    const { email, mobile, password } = inputs;
+    const { email, mobile, password, isAdmin } = inputs;
 
     if (!email && !mobile) {
       throw exits.emailOrMobileRequired(errorMessages.emailOrMobileRequired);
     }
 
     // Look up by the email address.
+    let userRecord;
     const userFindClause = email ? { email: email.toLowerCase() } : { mobile };
-    const userRecord = await User.findOne(userFindClause);
+    const userRecords = await User.find(userFindClause);
+
+    if (isAdmin) {
+      userRecord = userRecords.find(u => u.isAdmin && isAdmin === u.isAdmin);
+    }
+    else {
+      userRecord = userRecords.find(u => !u.isAdmin);
+    }
 
     if (userRecord && userRecord.accountStatus === constants.ACCOUNT_STATUS.UNCONFIRMED) {
       throw exits.accountNotConfirmed(errorMessages.accountNotConfirmed);
@@ -103,8 +121,19 @@ password attempt.`,
     // Modify the active session instance.
     // (This will be persisted when the response is sent.)
     this.req.session.userId = userRecord.id;
+    this.req.session.userName = userRecord.username;
+    this.req.session.userType = userRecord.userType;
 
-    exits.success();
+    const jwtKey = sails.config.custom.jwtKey;
+
+    exits.successWithData({
+      username: userRecord.username,
+      token: jwt.sign(
+        { id: userRecord.id, type: userRecord.userType },
+        jwtKey,
+        { expiresIn: '365d' }
+      )
+    })
 
   }
 

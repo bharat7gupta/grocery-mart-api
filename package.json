@@ -6,6 +6,7 @@
   "keywords": [],
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
+    "jsonwebtoken": "8.5.1",
     "key-mirror": "1.0.1",
     "mailgun-js": "0.22.0",
     "sails": "^1.2.4",
@@ -14,7 +15,6 @@
     "sails-hook-organics": "^2.0.0",
     "sails-hook-orm": "^2.1.1",
     "sails-hook-sockets": "^2.0.0",
-    "sails-hook-swagger-generator": "3.2.3",
     "sails-mongo": "^1.2.0"
   },
   "devDependencies": {
